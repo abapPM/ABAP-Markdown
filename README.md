@@ -1,12 +1,10 @@
-![Version](https://img.shields.io/endpoint?url=https://shield.abap.space/version-shield-json/github/abapPM/ABAP-XXX/src/zcl_XXX.clas.abap/c_version&label=Version&color=blue)
+![Version](https://img.shields.io/endpoint?url=https://shield.abap.space/version-shield-json/github/abapPM/ABAP-MARKDOWN/src/zcl_markdown.clas.abap/c_version&label=Version&color=blue)
 
-[![License](https://img.shields.io/github/license/abapPM/ABAP-XXX?label=License&color=green)](LICENSE)
+[![License](https://img.shields.io/github/license/abapPM/ABAP-MARKDOWN?label=License&color=green)](LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?color=green)](https://github.com/abapPM/.github/blob/main/CODE_OF_CONDUCT.md)
-[![REUSE Status](https://api.reuse.software/badge/github.com/abapPM/ABAP-XXX)](https://api.reuse.software/info/github.com/abapPM/ABAP-XXX)
+[![REUSE Status](https://api.reuse.software/badge/github.com/abapPM/ABAP-MARKDOWN)](https://api.reuse.software/info/github.com/abapPM/ABAP-MARKDOWN)
 
-# XXX
-
-
+# Markdown for ABAP
 
 NO WARRANTIES, [MIT License](LICENSE)
 
@@ -34,7 +32,7 @@ All contributions are welcome! Read our [Contribution Guidelines](CONTRIBUTING.m
 
 You can install the developer version of ABAP XXX using [abapGit](https://github.com/abapGit/abapGit) either by creating a new online repository for https://github.com/abapPM/ABAP-XXX.
 
-Recommended SAP package: `$XXX`.
+Recommended SAP package: `$MARKDOWN`.
 
 ## About
 
