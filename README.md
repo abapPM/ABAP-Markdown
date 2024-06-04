@@ -1,8 +1,8 @@
-![Version](https://img.shields.io/endpoint?url=https://shield.abap.space/version-shield-json/github/abapPM/ABAP-MARKDOWN/src/zcl_markdown.clas.abap/c_version&label=Version&color=blue)
+![Version](https://img.shields.io/endpoint?url=https://shield.abap.space/version-shield-json/github/abapPM/ABAP-Markdown/src/zcl_markdown.clas.abap/c_version&label=Version&color=blue)
 
-[![License](https://img.shields.io/github/license/abapPM/ABAP-MARKDOWN?label=License&color=green)](LICENSE)
+[![License](https://img.shields.io/github/license/abapPM/ABAP-Markdown?label=License&color=green)](LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?color=green)](https://github.com/abapPM/.github/blob/main/CODE_OF_CONDUCT.md)
-[![REUSE Status](https://api.reuse.software/badge/github.com/abapPM/ABAP-MARKDOWN)](https://api.reuse.software/info/github.com/abapPM/ABAP-MARKDOWN)
+[![REUSE Status](https://api.reuse.software/badge/github.com/abapPM/ABAP-Markdown)](https://api.reuse.software/info/github.com/abapPM/ABAP-Markdown)
 
 # Markdown for ABAP
 
@@ -30,7 +30,7 @@ IMPORT '*' TO '/namespace/$1$2' FROM 'xxx'.
 
 All contributions are welcome! Read our [Contribution Guidelines](CONTRIBUTING.md), fork this repo, and create a pull request.
 
-You can install the developer version of ABAP XXX using [abapGit](https://github.com/abapGit/abapGit) either by creating a new online repository for https://github.com/abapPM/ABAP-XXX.
+You can install the developer version of ABAP Markdown using [abapGit](https://github.com/abapGit/abapGit) either by creating a new online repository for https://github.com/abapPM/ABAP-Markdown.
 
 Recommended SAP package: `$MARKDOWN`.
 
