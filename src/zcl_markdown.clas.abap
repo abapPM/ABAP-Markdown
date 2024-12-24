@@ -21,10 +21,17 @@ CLASS zcl_markdown DEFINITION
 * - Support for strikethrough, subscript, superscript, highlight
 * - Support for task list ([ ] or [x] task)
 * - Fix a few regular expressions
+* - Support for GitHub alerts
+* - Fix for escaped | in tables
+* - CSS
 ************************************************************************
   PUBLIC SECTION.
 
-    CONSTANTS version TYPE string VALUE '1.3.0' ##NEEDED.
+    CONSTANTS version TYPE string VALUE '1.4.0' ##NEEDED.
+
+    CLASS-METHODS styles
+      RETURNING
+        VALUE(result) TYPE string.
 
     METHODS text
       IMPORTING
@@ -364,6 +371,12 @@ CLASS zcl_markdown DEFINITION
       IMPORTING
         !line          TYPE ty_line
         !block         TYPE ty_block OPTIONAL
+      RETURNING
+        VALUE(r_block) TYPE ty_block.
+
+    METHODS block_quote_complete
+      IMPORTING
+        !block         TYPE ty_block
       RETURNING
         VALUE(r_block) TYPE ty_block.
 
@@ -997,9 +1010,22 @@ CLASS zcl_markdown IMPLEMENTATION.
       SHIFT lv_m1 LEFT DELETING LEADING space.
       r_block-element-name = 'blockquote'.
       r_block-element-handler = '_lines'.
+      " >>> apm
+      IF lcl_alerts=>get( lv_m1 ) IS NOT INITIAL.
+        APPEND INITIAL LINE TO r_block-element-attributes ASSIGNING FIELD-SYMBOL(<attribute>).
+        <attribute>-name  = 'class'.
+        <attribute>-value = lcl_alerts=>get( lv_m1 )-class.
+        lv_m1 = lcl_alerts=>get( lv_m1 )-tag.
+      ENDIF.
+      " <<< apm
       APPEND lv_m1 TO r_block-element-lines.
     ENDIF.
   ENDMETHOD.                    "block_Quote
+
+
+  METHOD block_quote_complete.
+    r_block = block.
+  ENDMETHOD.
 
 
   METHOD block_quote_continue.
@@ -1009,6 +1035,12 @@ CLASS zcl_markdown IMPLEMENTATION.
       r_block = block.
       FIND REGEX '^>[ ]?(.*)' IN line-text SUBMATCHES lv_m1.
       IF sy-subrc = 0.
+        " >>> apm
+        IF lcl_alerts=>get( lv_m1 ) IS NOT INITIAL.
+          CLEAR r_block.
+          RETURN.
+        ENDIF.
+        " <<< apm
         SHIFT lv_m1 LEFT DELETING LEADING space.
         IF r_block-interrupted IS NOT INITIAL.
           APPEND INITIAL LINE TO r_block-element-lines.
@@ -1117,9 +1149,22 @@ CLASS zcl_markdown IMPLEMENTATION.
         str  = lv_divider
         mask = '|' ).
 
+      " >>> apm
+      " Replace escaped \|
+      lv_divider = replace(
+        val  = lv_divider
+        sub  = '\|'
+        with = '%bar%'
+        occ  = 0 ).
+      " <<< apm
       SPLIT lv_divider AT '|' INTO TABLE lt_divider_cells.
       LOOP AT lt_divider_cells ASSIGNING <divider_cell>.
         <divider_cell> = trim( <divider_cell> ).
+        <divider_cell> = replace(
+         val  = <divider_cell>
+         sub  = '%bar%'
+         with = '|'
+         occ  = 0 ). " apm
         CHECK <divider_cell> IS NOT INITIAL.
         APPEND INITIAL LINE TO r_block-alignments ASSIGNING <alignment>.
 
@@ -1144,10 +1189,23 @@ CLASS zcl_markdown IMPLEMENTATION.
         str  = lv_header
         mask = '|' ).
 
+      " >>> apm
+      " Replace escaped \|
+      lv_header = replace(
+        val  = lv_header
+        sub  = '\|'
+        with = '%bar%'
+        occ  = 0 ).
+      " <<< apm
       SPLIT lv_header AT '|' INTO TABLE lt_header_cells.
       LOOP AT lt_header_cells ASSIGNING <header_cell>.
         lv_index = sy-tabix.
         <header_cell> = trim( <header_cell> ).
+        <header_cell> = replace(
+         val  = <header_cell>
+         sub  = '%bar%'
+         with = '|'
+         occ  = 0 ). " apm
 
         APPEND INITIAL LINE TO lt_header_elements ASSIGNING <header_element>.
         <header_element>-name = 'th'.
@@ -1189,11 +1247,14 @@ CLASS zcl_markdown IMPLEMENTATION.
     DATA:
       lv_row     TYPE string,
       lt_matches TYPE match_result_tab,
+      lv_tabix   TYPE i,
       lv_index   TYPE i,
+      lv_count   TYPE i,
       lv_cell    TYPE string.
 
     FIELD-SYMBOLS:
       <match>     LIKE LINE OF lt_matches,
+      <match2>    LIKE LINE OF lt_matches,
       <text1>     LIKE LINE OF r_block-element-texts,
       <text2>     LIKE LINE OF <text1>-texts,
       <text3>     LIKE LINE OF <text2>-texts,
@@ -1217,12 +1278,27 @@ CLASS zcl_markdown IMPLEMENTATION.
       <text2>-name = 'tr'.
       <text2>-handler = 'elements'.
 
-      FIND ALL OCCURRENCES OF REGEX '(?:(\\[|])|[^|`]|`[^`]+`|`)+'
+      " >>> apm
+      " Replace escaped \|
+      lv_row = replace(
+        val  = lv_row
+        sub  = '\|'
+        with = '%bar%'
+        occ  = 0 ).
+      " REGEX '(?:(\\[|])|[^|`]|`[^`]+`|`)+' is too greedy
+      FIND ALL OCCURRENCES OF REGEX '(?:(\\[|])|[^|])+'
         IN lv_row RESULTS lt_matches.
+      " <<< apm
       LOOP AT lt_matches ASSIGNING <match>.
         lv_index = sy-tabix.
         lv_cell = lv_row+<match>-offset(<match>-length).
         lv_cell = trim( lv_cell ).
+
+        lv_cell = replace(
+          val  = lv_cell
+          sub  = '%bar%'
+          with = '|'
+          occ  = 0 ). " apm
 
         APPEND INITIAL LINE TO <text2>-texts ASSIGNING <text3>.
         <text3>-name = 'td'.
@@ -2468,6 +2544,109 @@ CLASS zcl_markdown IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD styles.
+
+    result = |.markdown\n|
+      && |\{ background-color: #f2f2f2; padding: 15px; \}\n|
+      && |.markdown .logo\n|
+      && |\{ width: 36px; height: 22px; margin-top: -4px; \}\n|
+      && |.markdown .header,\n|
+      && |.markdown .content\n|
+      && |\{ background-color: #ffffff; border: 1px solid #d8dee4; display: block; \}\n|
+      && |.markdown .header\n|
+      && |\{ font-size: larger; margin-bottom: 15px; padding: 15px; \}\n|
+      && |.markdown .content\n|
+      && |\{ padding: 25px; \}\n|
+      && |.markdown .html\n|
+      && |\{ max-width: 1024px; margin: 0 auto; padding: 25px; \}\n|
+      " Markdown View
+      && |.markdown .source\n|
+      && |\{ font-family: Consolas,Courier,monospace; font-size: 12pt; padding: 25px;\n|
+      && |  max-width: 1024px; margin: 0 auto; \}\n|
+      && |.markdown .source table\n|
+      && |\{ border: 1px solid #d8dee4; \}\n|
+      && |.markdown .source td\n|
+      && |\{ border-top: 0px; border-bottom: 0px; padding-top: 0; padding-bottom: 0;\n|
+      && |  line-height: 20px; vertical-align: top; \}\n|
+      " Syntax Highlight
+      && |.markdown .syntax-hl .heading\n|
+      && |\{ color: blue; \}\n|
+      && |.markdown .syntax-hl .link\n|
+      && |\{ color: purple; \}\n|
+      && |.markdown .syntax-hl .url\n|
+      && |\{ color: green; \}\n|
+      && |.markdown .syntax-hl .html\n|
+      && |\{ padding: 0; \}\n|
+      && |.markdown .syntax-hl .bold\n|
+      && |\{ font-weight: bold; \}\n|
+      " HTML Tags
+      && |.markdown h1,\n|
+      && |.markdown h2\n|
+      && |\{ border-bottom: 1px solid #d8dee4; box-sizing: border-box; \}\n|
+      && |.markdown img\n|
+      && |\{ border: 0; box-sizing: border-box; max-width: 100%; vertical-align: middle; \}\n|
+      && |.markdown table\n|
+      && |\{ border: 1px solid #ddd; border-radius: 3px; \}\n|
+      && |.markdown th,\n|
+      && |\{ color: #4078c0; background-color: #edf2f9; border-bottom-color: #ddd; \}\n|
+      && |.markdown th,\n|
+      && |.markdown td\n|
+      && |\{ border: 1px solid #ddd; padding: 6px 13px; \}\n|
+      && |.markdown tr:first-child td\n|
+      && |\{ border-top: 0; \}\n|
+      && |.markdown hr\n|
+      && |\{ background-color: #eee; margin: 24px 0; overflow: hidden; padding: 0; \}\n|
+      && |.markdown mark\n|
+      && |\{ background-color: #fff8e0; border-radius: 6px; margin: 0; padding: .2em .4em; \}\n|
+      && |.markdown blockquote\n|
+      && |\{ background-color: #eee; border-left: 3px solid #303d36; border-radius: 6px;\n|
+      && |  margin: 0 0 16px; padding: 1px 1em; \}\n|
+      " GitHub Alerts
+      && |.markdown blockquote.alert-note\n|
+      && |\{ border-left: 3px solid #4493f8; \}\n|
+      && |.markdown blockquote.alert-tip\n|
+      && |\{ border-left: 3px solid #3fb950; \}\n|
+      && |.markdown blockquote.alert-important\n|
+      && |\{ border-left: 3px solid #ab7df8; \}\n|
+      && |.markdown blockquote.alert-warning\n|
+      && |\{ border-left: 3px solid #d29922; \}\n|
+      && |.markdown blockquote.alert-caution\n|
+      && |\{ border-left: 3px solid #f85149; \}\n|
+      " Code blocks
+      && |.markdown pre\n|
+      && |\{ background-color: #eee; border-radius: 6px; display: block;\n|
+      && |  margin-bottom: 16px; margin-top: 0; overflow: auto; overflow-wrap: normal;\n|
+      && |  padding: 16px; word-break: normal; box-sizing: border-box;\n|
+      && |  font-family: Consolas, Courier, monospace; font-size: 14px; \}\n|
+      && |.markdown p code\n|
+      && |\{ background-color: #eee; border-radius: 6px; margin: 0; padding: .2em .4em;\n|
+      && |  font-family: Consolas, Courier, monospace; font-size: 14px; \}\n|
+      && |.markdown pre code\n|
+      && |\{ background-color: transparent; border-style: initial;\n|
+      && |  border-width: 0; box-sizing: border-box; display: inline; margin: 0;\n|
+      && |  overflow: visible; word-break: normal; overflow-wrap: normal;\n|
+      && |  padding: 0; white-space: pre;\n|
+      && |  font-family: Consolas, Courier, monospace; font-size: 14px; \}\n|
+      && |kbd \{\n|
+      && |  border: 1px solid rgba(61, 68, 77, .7);\n|
+      && |  border-radius: 6px;\n|
+      && |  box-shadow: inset 0 -1px 0 var(--borderColor-neutral-muted, var(--color-neutral-muted));\n|
+      && |  display: inline-block;\n|
+      && |  font-family: Consolas, Courier, monospace;\n|
+      && |  font-kerning: auto;\n|
+      && |  font-optical-sizing: auto;\n|
+      && |  font-size: 11px;\n|
+      && |  font-size-adjust: none;\n|
+      && |  font-variant: normal;\n|
+      && |  font-variant-emoji: normal;\n|
+      && |  font-weight: 400;\n|
+      && |  line-height: 10px;\n|
+      && |  padding: 4px;\n|
+      && |  vertical-align: middle;\}\n|.
+
+  ENDMETHOD.
+
+
   METHOD syntax_highlighter.
     ">>> apm
     DATA:
@@ -2532,6 +2711,34 @@ CLASS zcl_markdown IMPLEMENTATION.
     markup = trim(
       str  = markup
       mask = '\n' ).
+
+    " >>> apm
+    DO 5 TIMES.
+      CASE sy-index.
+        WHEN 1.
+          DATA(alert) = lcl_alerts=>get( '[!NOTE]' ).
+        WHEN 2.
+          alert = lcl_alerts=>get( '[!TIP]' ).
+        WHEN 3.
+          alert = lcl_alerts=>get( '[!IMPORTANT]' ).
+        WHEN 4.
+          alert = lcl_alerts=>get( '[!WARNING]' ).
+        WHEN 5.
+          alert = lcl_alerts=>get( '[!CAUTION]' ).
+      ENDCASE.
+
+      DATA(alert_html) = |<span style="color:{ alert-color };display:flex;align-items:center;">|
+        && |{ alert-icon }&nbsp;&nbsp;|
+        && |<strong>{ alert-text }</strong></span></p><p>|.
+
+      markup = replace(
+        val  = markup
+        sub  = alert-tag
+        with = alert_html
+        occ  = 0 ).
+    ENDDO.
+    " <<< apm
+
   ENDMETHOD.                    "text
 
 
