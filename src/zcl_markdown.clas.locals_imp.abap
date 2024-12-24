@@ -5,8 +5,8 @@ CLASS lcl_string IMPLEMENTATION.
     DATA lo_string TYPE REF TO lcl_string.
     lo_string ?= source.
     me->data = lo_string->data.
-  ENDMETHOD.                    "lif_value_type~copy
-ENDCLASS.                    "lcl_string IMPLEMENTATION
+  ENDMETHOD.
+ENDCLASS.
 
 
 *!
@@ -14,7 +14,7 @@ CLASS lcl_string_array IMPLEMENTATION.
   METHOD append.
     " Append a value to the end of the array
     APPEND value TO me->data.
-  ENDMETHOD.                    "append
+  ENDMETHOD.
 
   METHOD append_array.
     " Append the items of an array to this array
@@ -22,12 +22,12 @@ CLASS lcl_string_array IMPLEMENTATION.
     LOOP AT array->data ASSIGNING <item>.
       append( <item> ).
     ENDLOOP.
-  ENDMETHOD.                    "append_array
+  ENDMETHOD.
 
   METHOD delete.
     " Deletes a value from the array
     DELETE me->data WHERE table_line = value.
-  ENDMETHOD.                    "delete
+  ENDMETHOD.
 
   METHOD find_val.
     " Returns the index of the first occurrence of a value in the array,
@@ -37,15 +37,15 @@ CLASS lcl_string_array IMPLEMENTATION.
     IF sy-subrc = 0.
       index = sy-tabix.
     ENDIF.
-  ENDMETHOD.                    "find
+  ENDMETHOD.
 
   METHOD lif_value_type~copy.
     " Copies the value of the source object to itself
     DATA lo_sa TYPE REF TO lcl_string_array.
     lo_sa ?= source.
     me->data = lo_sa->data.
-  ENDMETHOD.                    "lif_value_type~copy
-ENDCLASS.                    "lcl_array IMPLEMENTATION
+  ENDMETHOD.
+ENDCLASS.
 
 
 *!
@@ -66,7 +66,7 @@ CLASS lcl_hashmap IMPLEMENTATION.
     ENDIF.
     TRANSLATE me->value_type TO UPPER CASE.
     TRANSLATE me->subsequent_hashmap_value_type TO UPPER CASE.
-  ENDMETHOD.                    "constructor
+  ENDMETHOD.
 
   METHOD new.
     " Adds a new item to the hashmap
@@ -87,7 +87,7 @@ CLASS lcl_hashmap IMPLEMENTATION.
       CREATE OBJECT <item>-value TYPE (me->value_type).
     ENDIF.
     value = <item>-value.
-  ENDMETHOD.                    "new
+  ENDMETHOD.
 
   METHOD exists.
     " Checks if a item exists in the hashmap.
@@ -97,7 +97,7 @@ CLASS lcl_hashmap IMPLEMENTATION.
     IF sy-subrc = 0.
       exists = 'X'.
     ENDIF.
-  ENDMETHOD.                    "exists
+  ENDMETHOD.
 
   METHOD get.
     " Gets an item reference from the hashmap.
@@ -111,7 +111,7 @@ CLASS lcl_hashmap IMPLEMENTATION.
     ELSE.
       value = new( key ).
     ENDIF.
-  ENDMETHOD.                    "get
+  ENDMETHOD.
 
   METHOD set.
     " Sets the value of an item in the hashmap.
@@ -120,12 +120,12 @@ CLASS lcl_hashmap IMPLEMENTATION.
     DATA lo_item TYPE REF TO lif_value_type.
     lo_item = get( key ).
     lo_item->copy( value ).
-  ENDMETHOD.                    "set
+  ENDMETHOD.
 
   METHOD delete.
     " Deletes an item from the hashmap.
     DELETE me->data WHERE key = key.
-  ENDMETHOD.                    "delete
+  ENDMETHOD.
 
   METHOD lif_value_type~copy.
     " Copies the contents of another hashmap to this hashmap
@@ -138,8 +138,8 @@ CLASS lcl_hashmap IMPLEMENTATION.
       lo_value = new( <item>-key ).
       lo_value->copy( <item>-value ).
     ENDLOOP.
-  ENDMETHOD.                    "lif_value_type~copy
-ENDCLASS.                    "lcl_hashmap IMPLEMENTATION
+  ENDMETHOD.
+ENDCLASS.
 
 
 *!

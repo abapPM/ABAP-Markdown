@@ -219,7 +219,8 @@ CLASS zcl_markdown DEFINITION
     DATA special_characters TYPE REF TO lcl_string_array.
     DATA strong_regex TYPE REF TO lcl_hashmap.
     DATA em_regex TYPE REF TO lcl_hashmap.
-    DATA regex_html_attribute TYPE string VALUE '[a-zA-Z_:][\w:.-]*(?:\s*=\s*(?:[^"''=<>`\s]+|"[^"]*"|''[^'']*''))?' ##NO_TEXT.
+    DATA regex_html_attribute TYPE string
+      VALUE '[a-zA-Z_:][\w:.-]*(?:\s*=\s*(?:[^"''=<>`\s]+|"[^"]*"|''[^'']*''))?' ##NO_TEXT.
     DATA void_elements TYPE REF TO lcl_string_array.
     DATA text_level_elements TYPE REF TO lcl_string_array.
     DATA safe_links_whitelist TYPE REF TO lcl_string_array.
@@ -1004,6 +1005,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
   METHOD block_quote.
     DATA lv_m1 TYPE string.
+    FIELD-SYMBOLS <attribute> LIKE LINE OF r_block-element-attributes.
 
     FIND REGEX '^>[ ]?(.*)' IN line-text SUBMATCHES lv_m1.
     IF sy-subrc = 0.
@@ -1012,7 +1014,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       r_block-element-handler = '_lines'.
       " >>> apm
       IF lcl_alerts=>get( lv_m1 ) IS NOT INITIAL.
-        APPEND INITIAL LINE TO r_block-element-attributes ASSIGNING FIELD-SYMBOL(<attribute>).
+        APPEND INITIAL LINE TO r_block-element-attributes ASSIGNING <attribute>.
         <attribute>-name  = 'class'.
         <attribute>-value = lcl_alerts=>get( lv_m1 )-class.
         lv_m1 = lcl_alerts=>get( lv_m1 )-tag.
@@ -1247,14 +1249,11 @@ CLASS zcl_markdown IMPLEMENTATION.
     DATA:
       lv_row     TYPE string,
       lt_matches TYPE match_result_tab,
-      lv_tabix   TYPE i,
       lv_index   TYPE i,
-      lv_count   TYPE i,
       lv_cell    TYPE string.
 
     FIELD-SYMBOLS:
       <match>     LIKE LINE OF lt_matches,
-      <match2>    LIKE LINE OF lt_matches,
       <text1>     LIKE LINE OF r_block-element-texts,
       <text2>     LIKE LINE OF <text1>-texts,
       <text3>     LIKE LINE OF <text2>-texts,
@@ -1287,7 +1286,7 @@ CLASS zcl_markdown IMPLEMENTATION.
         occ  = 0 ).
       " REGEX '(?:(\\[|])|[^|`]|`[^`]+`|`)+' is too greedy
       FIND ALL OCCURRENCES OF REGEX '(?:(\\[|])|[^|])+'
-        IN lv_row RESULTS lt_matches.
+        IN lv_row RESULTS lt_matches ##SUBRC_OK.
       " <<< apm
       LOOP AT lt_matches ASSIGNING <match>.
         lv_index = sy-tabix.
@@ -2062,9 +2061,8 @@ CLASS zcl_markdown IMPLEMENTATION.
     IF sy-subrc <> 0.
       FIND REGEX '(^<!---?[^>-](?:-?[^-])*-->)' IN excerpt-text SUBMATCHES lv_m0.
       IF sy-subrc <> 0.
-        lv_regex
-         = '(^<\w*(?:[ ]*' && regex_html_attribute && ')*[ ]*\/?>)'.
-        FIND REGEX lv_regex IN excerpt-text SUBMATCHES lv_m0.
+        lv_regex = '(^<\w*(?:[ ]*' && regex_html_attribute && ')*[ ]*\/?>)'.
+        FIND REGEX lv_regex IN excerpt-text SUBMATCHES lv_m0 ##SUBRC_OK.
       ENDIF.
     ENDIF.
 
@@ -2185,7 +2183,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     READ TABLE lines TRANSPORTING NO FIELDS WITH KEY table_line = ''.
     IF sy-subrc <> 0 AND strlen( lv_trimmed_markup ) >= 3 AND lv_trimmed_markup(3) = '<p>'.
       markup = lv_trimmed_markup+3.
-      FIND '</p>' IN markup MATCH OFFSET lv_fdpos.
+      FIND '</p>' IN markup MATCH OFFSET lv_fdpos ##SUBRC_OK.
       lv_pos_to = lv_fdpos + 4.
       CONCATENATE markup(lv_fdpos) markup+lv_pos_to INTO markup.
     ENDIF.
@@ -2228,7 +2226,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       ls_excerpt-text = lv_text+sy-fdpos.
       lv_marker = ls_excerpt-text(1).
 
-      FIND lv_marker IN lv_text MATCH OFFSET lv_marker_position.
+      FIND lv_marker IN lv_text MATCH OFFSET lv_marker_position ##SUBRC_OK.
 
       ls_excerpt-context = lv_text.
 
@@ -2687,6 +2685,8 @@ CLASS zcl_markdown IMPLEMENTATION.
     " Parses the markdown text and returns the markup
 
     DATA lt_lines TYPE TABLE OF string.
+    DATA ls_alert TYPE lcl_alerts=>ty_alert.
+    DATA lv_alert_html TYPE string.
 
     "# make sure no definitions are set
     CREATE OBJECT definition_data
@@ -2716,25 +2716,25 @@ CLASS zcl_markdown IMPLEMENTATION.
     DO 5 TIMES.
       CASE sy-index.
         WHEN 1.
-          DATA(alert) = lcl_alerts=>get( '[!NOTE]' ).
+          ls_alert = lcl_alerts=>get( '[!NOTE]' ).
         WHEN 2.
-          alert = lcl_alerts=>get( '[!TIP]' ).
+          ls_alert = lcl_alerts=>get( '[!TIP]' ).
         WHEN 3.
-          alert = lcl_alerts=>get( '[!IMPORTANT]' ).
+          ls_alert = lcl_alerts=>get( '[!IMPORTANT]' ).
         WHEN 4.
-          alert = lcl_alerts=>get( '[!WARNING]' ).
+          ls_alert = lcl_alerts=>get( '[!WARNING]' ).
         WHEN 5.
-          alert = lcl_alerts=>get( '[!CAUTION]' ).
+          ls_alert = lcl_alerts=>get( '[!CAUTION]' ).
       ENDCASE.
 
-      DATA(alert_html) = |<span style="color:{ alert-color };display:flex;align-items:center;">|
-        && |{ alert-icon }&nbsp;&nbsp;|
-        && |<strong>{ alert-text }</strong></span></p><p>|.
+      lv_alert_html = |<span style="color:{ ls_alert-color };display:flex;align-items:center;">|
+        && |{ ls_alert-icon }&nbsp;&nbsp;|
+        && |<strong>{ ls_alert-text }</strong></span></p><p>|.
 
       markup = replace(
         val  = markup
-        sub  = alert-tag
-        with = alert_html
+        sub  = ls_alert-tag
+        with = lv_alert_html
         occ  = 0 ).
     ENDDO.
     " <<< apm
@@ -2825,7 +2825,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     r_source = source.
 
-    FIND ALL OCCURRENCES OF REGEX 'href\s*=\s*"([^"]*)"' IN r_source RESULTS lt_matches.
+    FIND ALL OCCURRENCES OF REGEX 'href\s*=\s*"([^"]*)"' IN r_source RESULTS lt_matches ##SUBRC_OK.
 
     SORT lt_matches DESCENDING BY line DESCENDING offset.
 
@@ -2840,7 +2840,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     CLEAR lt_matches.
 
-    FIND ALL OCCURRENCES OF REGEX 'src\s*=\s*"([^"]*)"' IN r_source RESULTS lt_matches.
+    FIND ALL OCCURRENCES OF REGEX 'src\s*=\s*"([^"]*)"' IN r_source RESULTS lt_matches ##SUBRC_OK.
 
     SORT lt_matches DESCENDING BY line DESCENDING offset.
 
@@ -2917,7 +2917,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       ENDIF.
 
       CLEAR lv_spaces.
-      FIND REGEX '^(\s+)' IN lv_line SUBMATCHES lv_spaces.
+      FIND REGEX '^(\s+)' IN lv_line SUBMATCHES lv_spaces ##SUBRC_OK.
       lv_indent = strlen( lv_spaces ).
       IF lv_indent > 0.
         lv_text = lv_line+lv_indent.

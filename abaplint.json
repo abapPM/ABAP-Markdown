@@ -33,6 +33,7 @@
       "checkLocal": false,
       "classDefinition": false,
       "exclude": [".*"],
+      "ignoreTestClasses": false,
       "interfaceDefinition": false,
       "severity": "Error"
     },
@@ -44,7 +45,8 @@
       "allowed": [
         "CLAS",
         "DEVC",
-        "INTF"
+        "INTF",
+        "PROG"
       ],
       "exclude": [],
       "severity": "Error"
@@ -137,17 +139,17 @@
       "severity": "Error"
     },
     "class_attribute_names": {
-      "constants": "^C_.+$",
+      "constants": "^.+$",
       "exclude": [],
       "ignoreExceptions": true,
       "ignoreInterfaces": false,
       "ignoreLocal": true,
       "ignoreNames": [],
       "ignorePatterns": [],
-      "instance": "^M._.+$",
+      "instance": "^.+$",
       "patternKind": "required",
       "severity": "Error",
-      "statics": "^G._.+$"
+      "statics": "^.+$"
     },
     "cloud_types": {
       "exclude": [],
@@ -180,7 +182,7 @@
     },
     "cyclomatic_complexity": {
       "exclude": [],
-      "max": 20,
+      "max": 22,
       "severity": "Error"
     },
     "dangerous_statement": {
@@ -195,6 +197,7 @@
       "generateReport": true,
       "generateSubroutine": true,
       "insertReport": true,
+      "insertTextpool": true,
       "kernelCall": true,
       "severity": "Error",
       "systemCall": true
@@ -239,6 +242,7 @@
       "exclude": [],
       "if": true,
       "loop": true,
+      "loopAllowIfSubrc": true,
       "select": true,
       "severity": "Error",
       "try": true,
@@ -457,7 +461,7 @@
       "style": "upper"
     },
     "line_break_multiple_parameters": {
-      "count": 1,
+      "count": 4,
       "exclude": [],
       "severity": "Error"
     },
@@ -467,7 +471,7 @@
     },
     "line_length": {
       "exclude": [],
-      "length": 120,
+      "length": 130,
       "severity": "Error"
     },
     "line_only_punc": {
@@ -493,7 +497,7 @@
       "exclude": [],
       "expectedConstant": "^LC_.+$",
       "expectedData": "^L._.+$",
-      "expectedFS": "^<L._.+>$",
+      "expectedFS": "^<.+>$",
       "ignoreNames": [],
       "ignorePatterns": [],
       "patternKind": "required",
@@ -530,22 +534,22 @@
       "exclude": [],
       "ignoreTestClasses": true,
       "severity": "Warning",
-      "statements": 100
+      "statements": 250
     },
     "method_overwrites_builtin": {
       "exclude": [],
       "severity": "Error"
     },
     "method_parameter_names": {
-      "changing": "^C._.+$",
+      "changing": "^.+$",
       "exclude": [],
-      "exporting": "^E._.+$",
+      "exporting": "^.+$",
       "ignoreExceptions": true,
       "ignoreNames": [],
       "ignorePatterns": [],
-      "importing": "^I._.+$",
+      "importing": "^.+$",
       "patternKind": "required",
-      "returning": "^(?:R._.+|RESULT)$",
+      "returning": "^(?:.+|RESULT)$",
       "severity": "Error"
     },
     "mix_returning": {
@@ -568,7 +572,7 @@
       "severity": "Error"
     },
     "nesting": {
-      "depth": 5,
+      "depth": 7,
       "exclude": [],
       "severity": "Error"
     },
@@ -578,17 +582,8 @@
       "logic": "less",
       "severity": "Error"
     },
-    "no_public_attributes": {
-      "allowReadOnly": true,
-      "exclude": [],
-      "ignoreTestClasses": false,
-      "severity": "Error"
-    },
-    "no_yoda_conditions": {
-      "exclude": [],
-      "onlyConstants": false,
-      "severity": "Error"
-    },
+    "no_public_attributes": false,
+    "no_yoda_conditions": false,
     "object_naming": {
       "auth": "^Z",
       "clas": "^ZC(L|X)\\_",
@@ -724,7 +719,8 @@
     },
     "select_add_order_by": {
       "exclude": [],
-      "severity": "Error"
+      "severity": "Error",
+      "skipForAllEntries": true
     },
     "select_performance": {
       "endSelect": true,
@@ -823,10 +819,7 @@
       "exclude": [],
       "severity": "Error"
     },
-    "unused_methods": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "unused_methods": false,
     "unused_types": {
       "exclude": [],
       "severity": "Error",
@@ -836,16 +829,13 @@
       "exclude": [],
       "severity": "Error",
       "skipAbstract": false,
-      "skipNames": []
+      "skipNames": ["block"]
     },
     "use_bool_expression": {
       "exclude": [],
       "severity": "Error"
     },
-    "use_class_based_exceptions": {
-      "exclude": [],
-      "severity": "Error"
-    },
+    "use_class_based_exceptions": false,
     "use_line_exists": {
       "exclude": [],
       "severity": "Error"

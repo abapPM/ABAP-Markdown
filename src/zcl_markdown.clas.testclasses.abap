@@ -29,16 +29,15 @@ ENDCLASS.                    "string_tests DEFINITION
 *!
 CLASS ltcl_string_tests IMPLEMENTATION.
   METHOD copying.
+    DATA lo_new TYPE REF TO lcl_string.
     CREATE OBJECT o_string.
     o_string->data = 'SpongeBob'.
 
-    DATA: lo_new TYPE REF TO lcl_string.
     CREATE OBJECT lo_new.
     lo_new->copy( o_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'SpongeBob'
-      act = lo_new->data
-    ).
+      act = lo_new->data ).
   ENDMETHOD.                    "copying
 ENDCLASS.                    "string_tests IMPLEMENTATION
 
@@ -61,56 +60,55 @@ ENDCLASS.                    "string_array_tests DEFINITION
 *!
 CLASS ltcl_string_array_tests IMPLEMENTATION.
   METHOD copying.
+    DATA lo_new TYPE REF TO lcl_string_array.
+    DATA lv_conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    DATA: lo_new  TYPE REF TO lcl_string_array,
-          lv_conc TYPE string.
     CREATE OBJECT lo_new.
     lo_new->copy( o_sa ).
 
     CONCATENATE LINES OF lo_new->data INTO lv_conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
-      act = lv_conc
-    ).
+      act = lv_conc ).
   ENDMETHOD.                    "copying
 
   METHOD append.
+    DATA lv_conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    DATA: lv_conc TYPE string.
+
     CONCATENATE LINES OF o_sa->data INTO lv_conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
-      act = lv_conc
-    ).
+      act = lv_conc ).
   ENDMETHOD.                    "append
 
   METHOD append_array.
+    DATA lo_new TYPE REF TO lcl_string_array.
+    DATA lv_conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    DATA: lo_new  TYPE REF TO lcl_string_array,
-          lv_conc TYPE string.
     CREATE OBJECT lo_new.
     lo_new->append_array( o_sa ).
 
     CONCATENATE LINES OF lo_new->data INTO lv_conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
-      act = lv_conc
-    ).
+      act = lv_conc ).
   ENDMETHOD.                    "append_array
 
   METHOD delete.
+    DATA lv_conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
@@ -118,26 +116,25 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
 
     o_sa->delete( 'Two' ).
 
-    DATA: lv_conc TYPE string.
+
     CONCATENATE LINES OF o_sa->data INTO lv_conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneThree'
-      act = lv_conc
-    ).
+      act = lv_conc ).
   ENDMETHOD.                    "delete
 
   METHOD find_val.
+    DATA lv_index TYPE i.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    DATA: lv_index TYPE i.
+
     lv_index = o_sa->find_val( 'Two' ).
     cl_aunit_assert=>assert_equals(
       exp = 2
-      act = lv_index
-    ).
+      act = lv_index ).
   ENDMETHOD.                    "find
 ENDCLASS.                    "string_array_tests IMPLEMENTATION
 
@@ -165,14 +162,15 @@ ENDCLASS.                    "hashmap_tests DEFINITION
 *!
 CLASS ltcl_hashmap_tests IMPLEMENTATION.
   METHOD copying.
+    DATA lo_value TYPE REF TO lcl_string.
+    DATA lo_new TYPE REF TO lcl_hashmap.
     CREATE OBJECT o_hm
       EXPORTING
         value_type = 'lcl_string'.
-    DATA: lo_value TYPE REF TO lcl_string.
+
     lo_value ?= o_hm->new( 'IdxOne' ).
     lo_value->data = 'ValueOne'.
 
-    DATA: lo_new TYPE REF TO lcl_hashmap.
     CREATE OBJECT lo_new
       EXPORTING
         value_type = 'lcl_string'.
@@ -180,8 +178,7 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
     lo_value ?= lo_new->get( 'IdxOne' ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = lo_value->data
-    ).
+      act = lo_value->data ).
   ENDMETHOD.                    "copying
 
   METHOD create_string_hashmap.
@@ -245,8 +242,7 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
     cl_aunit_assert=>assert_not_initial( lo_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = lo_string->data
-    ).
+      act = lo_string->data ).
   ENDMETHOD.                    "get
 
   METHOD set.
@@ -263,20 +259,19 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
 
     o_hm->set(
       key = 'IdxOne'
-      value = lo_str1
-    ).
+      value = lo_str1 ).
 
     lo_str2 ?= o_hm->get( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( lo_str2 ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = lo_str2->data
-    ).
+      act = lo_str2->data ).
   ENDMETHOD.                    "set
 
   METHOD exists.
+    DATA lv_exists TYPE abap_bool.
     CREATE OBJECT o_hm.
-    DATA: lv_exists TYPE abap_bool.
+
 
     o_hm->new( 'IdxOne' ).
 
@@ -288,12 +283,13 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
   ENDMETHOD.                    "exists
 
   METHOD delete.
+    DATA lv_exists TYPE abap_bool.
     CREATE OBJECT o_hm.
     o_hm->new( 'IdxOne' ).
     o_hm->new( 'IdxTwo' ).
     o_hm->new( 'IdxThree' ).
 
-    DATA: lv_exists TYPE abap_bool.
+
     lv_exists = o_hm->exists( 'IdxTwo' ).
     cl_aunit_assert=>assert_not_initial( lv_exists ).
 
@@ -397,8 +393,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -425,8 +420,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -450,8 +444,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -465,8 +458,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -488,8 +480,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -509,8 +500,7 @@ lv_markdown RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -533,8 +523,7 @@ INTO lv_markdown RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -552,8 +541,7 @@ INTO lv_markdown RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -571,8 +559,7 @@ INTO lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -590,8 +577,7 @@ INTO lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -609,8 +595,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -636,8 +621,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -656,8 +640,7 @@ INTO lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -683,8 +666,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -709,8 +691,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -739,8 +720,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -756,8 +736,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -775,8 +754,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -790,8 +768,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -807,8 +784,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -825,8 +801,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -852,8 +827,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1008,8 +982,7 @@ INTO lv_markdown RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1035,8 +1008,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1054,8 +1026,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1072,8 +1043,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1088,8 +1058,7 @@ INTO lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1103,8 +1072,7 @@ INTO lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1120,8 +1088,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1138,8 +1105,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1157,8 +1123,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1178,8 +1143,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1198,8 +1162,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1222,8 +1185,7 @@ INTO lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1245,8 +1207,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1263,8 +1224,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1282,8 +1242,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1302,8 +1261,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1331,8 +1289,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1351,8 +1308,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1369,8 +1325,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1386,8 +1341,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1407,8 +1361,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1431,8 +1384,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1450,8 +1402,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1474,8 +1425,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1494,8 +1444,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1504,22 +1453,21 @@ BLANKS.
           lv_expected_markup TYPE string,
           lv_actual_markup   TYPE string.
     CONCATENATE '| _header_ 1   | header 2     |' %_newline '| ------------ | ------------ |'
-%_newline '| _cell_ 1.1   | ~~cell~~ 1.2 |' %_newline '| `|` 2.1      | \| 2.2       |'
+%_newline '| _cell_ 1.1   | ~~cell~~ 1.2 |' %_newline '| `\|` 2.1      | \| 2.2       |'
 %_newline '| `\|` 2.1     | [link](/)    |' INTO lv_markdown RESPECTING BLANKS.
     CONCATENATE '<table>' %_newline '<thead>' %_newline '<tr>' %_newline
 '<th><em>header</em> 1</th>' %_newline '<th>header 2</th>' %_newline '</tr>' %_newline
 '</thead>' %_newline '<tbody>' %_newline '<tr>' %_newline '<td><em>cell</em> 1.1</td>'
 %_newline '<td><del>cell</del> 1.2</td>' %_newline '</tr>' %_newline '<tr>' %_newline
 '<td><code>|</code> 2.1</td>' %_newline '<td>| 2.2</td>' %_newline '</tr>' %_newline
-'<tr>' %_newline '<td><code>\|</code> 2.1</td>' %_newline '<td><a href="/">link</a></td>'
+'<tr>' %_newline '<td><code>|</code> 2.1</td>' %_newline '<td><a href="/">link</a></td>'
 %_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO lv_expected_markup
 RESPECTING BLANKS.
     markdown->set_safe_mode( abap_false ).
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1549,8 +1497,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1568,8 +1515,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1590,8 +1536,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1616,8 +1561,7 @@ BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1632,8 +1576,7 @@ lv_markdown RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1657,8 +1600,7 @@ RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1709,8 +1651,7 @@ lv_markdown RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 
@@ -1729,8 +1670,7 @@ lv_expected_markup RESPECTING BLANKS.
     lv_actual_markup = markdown->text( lv_markdown ).
     cl_aunit_assert=>assert_equals(
       act = lv_actual_markup
-      exp = lv_expected_markup
-    ).
+      exp = lv_expected_markup ).
   ENDMETHOD.
 
 ENDCLASS.                    "markdown_tests IMPLEMENTATION
