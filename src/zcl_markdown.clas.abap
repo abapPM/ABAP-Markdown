@@ -25,9 +25,10 @@ CLASS zcl_markdown DEFINITION
 * - Fix for escaped | in tables
 * - CSS
 ************************************************************************
+
   PUBLIC SECTION.
 
-    CONSTANTS version TYPE string VALUE '1.4.0' ##NEEDED.
+    CONSTANTS c_version TYPE string VALUE '1.4.0' ##NEEDED.
 
     CLASS-METHODS styles
       RETURNING
@@ -224,8 +225,7 @@ CLASS zcl_markdown DEFINITION
     DATA void_elements TYPE REF TO lcl_string_array.
     DATA text_level_elements TYPE REF TO lcl_string_array.
     DATA safe_links_whitelist TYPE REF TO lcl_string_array.
-    DATA:
-      methods TYPE STANDARD TABLE OF string.
+    DATA methods TYPE STANDARD TABLE OF string.
 
     CLASS-METHODS htmlspecialchars
       IMPORTING
@@ -1184,7 +1184,7 @@ CLASS zcl_markdown IMPLEMENTATION.
         ENDIF.
       ENDLOOP. "lt_divider_cells
 
-      "# ~
+      " ~
 
       lv_header = trim( r_block-element-text-text ).
       lv_header = trim(
@@ -1224,7 +1224,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
       ENDLOOP.
 
-      "# ~
+      " ~
 
       r_block-identified = abap_true.
       r_block-element-name = 'table'.
@@ -1345,9 +1345,9 @@ CLASS zcl_markdown IMPLEMENTATION.
     CREATE OBJECT config-path_util.
     "<<< apm
 
-    "#
-    "# Lines
-    "#
+    "
+    " Lines
+    "
     CREATE OBJECT block_types
       EXPORTING
         value_type = 'lcl_string_array'.
@@ -1407,9 +1407,9 @@ CLASS zcl_markdown IMPLEMENTATION.
     CREATE OBJECT unmarked_block_types.
     unmarked_block_types->append( 'Code' ).
 
-    "#
-    "# Inline Elements
-    "#
+    "
+    " Inline Elements
+    "
     CREATE OBJECT inline_types
       EXPORTING
         value_type = 'lcl_string_array'.
@@ -1448,9 +1448,9 @@ CLASS zcl_markdown IMPLEMENTATION.
     "<<< apm
     lo_sa ?= inline_types->new( '\' ).
     lo_sa->append( 'EscapeSequence' ).
-    "#
-    "# Read-Only
-    "#
+    "
+    " Read-Only
+    "
     CREATE OBJECT special_characters.
 
     lo_sa = special_characters.
@@ -2215,8 +2215,8 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     FIELD-SYMBOLS <inline_type> LIKE LINE OF lo_inline_types_sa->data.
 
-    "# lv_text contains the unexamined text
-    "# ls_excerpt-text is based on the first occurrence of a marker
+    " lv_text contains the unexamined text
+    " ls_excerpt-text is based on the first occurrence of a marker
     lv_text = element-text.
 
     WHILE lv_text IS NOT INITIAL.
@@ -2241,29 +2241,29 @@ CLASS zcl_markdown IMPLEMENTATION.
           RECEIVING
             r_inline = ls_inline.
 
-        "# makes sure that the inline belongs to "our" marker
+        " makes sure that the inline belongs to "our" marker
         CHECK ls_inline IS NOT INITIAL.
         CHECK ls_inline-position <= lv_marker_position.
 
-        "# sets a default inline position
+        " sets a default inline position
         IF ls_inline-position IS INITIAL.
           ls_inline-position = lv_marker_position.
         ELSE.
           ls_inline-position = ls_inline-position - 1.
         ENDIF.
 
-        "# the text that comes before the inline
+        " the text that comes before the inline
         IF ls_inline-position <= strlen( lv_text ).
           lv_unmarked_text = lv_text(ls_inline-position).
         ELSE.
           lv_unmarked_text = lv_text.
         ENDIF.
 
-        "# compile the unmarked text
+        " compile the unmarked text
         lv_markup_part = unmarked_text( lv_unmarked_text ).
         CONCATENATE markup lv_markup_part INTO markup.
 
-        "# compile the inline
+        " compile the inline
         IF ls_inline-markup IS NOT INITIAL.
           CONCATENATE markup ls_inline-markup INTO markup.
         ELSE.
@@ -2271,7 +2271,7 @@ CLASS zcl_markdown IMPLEMENTATION.
           CONCATENATE markup lv_markup_part INTO markup.
         ENDIF.
 
-        "# remove the examined text
+        " remove the examined text
         lv_pos = ls_inline-position + ls_inline-extent.
         IF lv_pos <= strlen( lv_text ).
           lv_text = lv_text+lv_pos.
@@ -2284,7 +2284,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       ENDLOOP. "inline_types->data
       CHECK lv_continue_loop IS INITIAL.
 
-      "# the marker does not belong to an inline
+      " the marker does not belong to an inline
       lv_marker_position = lv_marker_position + 1.
       IF lv_marker_position <= strlen( lv_text ).
         lv_unmarked_text = lv_text(lv_marker_position).
@@ -2488,13 +2488,13 @@ CLASS zcl_markdown IMPLEMENTATION.
     ENDCASE.
 
     LOOP AT r_element-attributes ASSIGNING <attribute>.
-      "# filter out badly parsed attribute
+      " filter out badly parsed attribute
       FIND REGEX lc_good_attribute IN <attribute>-name.
       IF sy-subrc <> 0.
         DELETE TABLE r_element-attributes FROM <attribute>.
         CONTINUE.
       ENDIF.
-      "# dump onevent attribute
+      " dump onevent attribute
       IF string_at_start(
         haystack = <attribute>-name
         needle   = 'on' ) = abap_true.
@@ -2688,26 +2688,26 @@ CLASS zcl_markdown IMPLEMENTATION.
     DATA ls_alert TYPE lcl_alerts=>ty_alert.
     DATA lv_alert_html TYPE string.
 
-    "# make sure no definitions are set
+    " make sure no definitions are set
     CREATE OBJECT definition_data
       EXPORTING
         value_type = 'lcl_hashmap:lcl_hashmap'.
 
-    "# standardize line breaks
+    " standardize line breaks
     REPLACE ALL OCCURRENCES OF REGEX '\r?\n' IN text WITH %_newline.
 
-    "# remove surrounding line breaks
+    " remove surrounding line breaks
     text = trim(
       str  = text
       mask = '\n' ).
 
-    "# split text into lines
+    " split text into lines
     SPLIT text AT %_newline INTO TABLE lt_lines.
 
-    "# iterate through lines to identify blocks
+    " iterate through lines to identify blocks
     markup = _lines( lt_lines ).
 
-    "# trim line breaks
+    " trim line breaks
     markup = trim(
       str  = markup
       mask = '\n' ).
@@ -2925,14 +2925,14 @@ CLASS zcl_markdown IMPLEMENTATION.
         lv_text = lv_line.
       ENDIF.
 
-      "# ~
+      " ~
 
       CLEAR ls_line.
       ls_line-body = lv_line.
       ls_line-indent = lv_indent.
       ls_line-text = lv_text.
 
-      "# ~
+      " ~
 
       IF ls_current_block-continuable IS NOT INITIAL.
         CLEAR ls_block.
@@ -2962,11 +2962,11 @@ CLASS zcl_markdown IMPLEMENTATION.
         CLEAR ls_current_block-continuable.
       ENDIF. "ls_current_block-continuable is not initial.
 
-      "# ~
+      " ~
 
       lv_marker = lv_text(1).
 
-      "# ~
+      " ~
 
       CREATE OBJECT lo_block_types.
       lo_block_types->copy( unmarked_block_types ).
@@ -2978,8 +2978,8 @@ CLASS zcl_markdown IMPLEMENTATION.
         lo_block_types->append_array( lo_sa ).
       ENDIF.
 
-      "#
-      "# ~
+      "
+      " ~
 
       LOOP AT lo_block_types->data ASSIGNING <block_type_name>.
         CLEAR ls_block.
@@ -3018,7 +3018,7 @@ CLASS zcl_markdown IMPLEMENTATION.
         CONTINUE.
       ENDIF.
 
-      "# ~
+      " ~
 
       IF ls_current_block IS NOT INITIAL AND
          ls_current_block-type IS INITIAL AND
@@ -3035,7 +3035,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     ENDLOOP. "lines
 
-    "# ~
+    " ~
 
     IF ls_current_block-continuable IS NOT INITIAL.
       CONCATENATE 'block_' ls_current_block-type '_complete' INTO lv_method_name.
@@ -3053,7 +3053,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     APPEND ls_current_block TO lt_blocks.
     DELETE lt_blocks INDEX 1.
 
-    "# ~
+    " ~
 
     LOOP AT lt_blocks ASSIGNING <block>.
       CHECK <block>-hidden IS INITIAL.
