@@ -91,7 +91,7 @@ CLASS zcl_markdown DEFINITION
         text       TYPE string,
         lines      TYPE string_table,
       END OF ty_element0,
-      ty_t_element0 TYPE STANDARD TABLE OF ty_element0 WITH DEFAULT KEY.
+      ty_t_element0 TYPE STANDARD TABLE OF ty_element0 WITH KEY name.
 
     TYPES:
       BEGIN OF ty_element1,
@@ -102,7 +102,7 @@ CLASS zcl_markdown DEFINITION
         texts      TYPE ty_t_element0,
         lines      TYPE string_table,
       END OF ty_element1,
-      ty_t_element1 TYPE STANDARD TABLE OF ty_element1 WITH DEFAULT KEY.
+      ty_t_element1 TYPE STANDARD TABLE OF ty_element1 WITH KEY name.
 
     TYPES:
       BEGIN OF ty_element2,
@@ -113,7 +113,7 @@ CLASS zcl_markdown DEFINITION
         texts      TYPE ty_t_element1,
         lines      TYPE string_table,
       END OF ty_element2,
-      ty_t_element2 TYPE STANDARD TABLE OF ty_element2 WITH DEFAULT KEY.
+      ty_t_element2 TYPE STANDARD TABLE OF ty_element2 WITH KEY name.
 
     TYPES:
       BEGIN OF ty_element3,
@@ -124,7 +124,7 @@ CLASS zcl_markdown DEFINITION
         texts      TYPE ty_t_element2,
         lines      TYPE string_table,
       END OF ty_element3,
-      ty_t_element3 TYPE STANDARD TABLE OF ty_element3 WITH DEFAULT KEY.
+      ty_t_element3 TYPE STANDARD TABLE OF ty_element3 WITH KEY name.
 
     TYPES:
       BEGIN OF ty_element4,
@@ -135,7 +135,7 @@ CLASS zcl_markdown DEFINITION
         texts      TYPE ty_t_element3,
         lines      TYPE string_table,
       END OF ty_element4,
-      ty_t_element4 TYPE STANDARD TABLE OF ty_element4 WITH DEFAULT KEY.
+      ty_t_element4 TYPE STANDARD TABLE OF ty_element4 WITH KEY name.
 
     TYPES:
       BEGIN OF ty_element5,
@@ -223,7 +223,7 @@ CLASS zcl_markdown DEFINITION
     DATA void_elements TYPE REF TO lcl_string_array.
     DATA text_level_elements TYPE REF TO lcl_string_array.
     DATA safe_links_whitelist TYPE REF TO lcl_string_array.
-    DATA methods TYPE STANDARD TABLE OF string.
+    DATA methods TYPE string_table.
 
     CLASS-METHODS htmlspecialchars
       IMPORTING
@@ -1691,11 +1691,12 @@ CLASS zcl_markdown IMPLEMENTATION.
     CHECK sy-subrc = 0.
 
     ">>> apm
-    IF attribute = 'href'.
-      <attribute>-value = _adjust_a_href( <attribute>-value ).
-    ELSEIF attribute = 'src'.
-      <attribute>-value = _adjust_img_src( <attribute>-value ).
-    ENDIF.
+    CASE attribute.
+      WHEN 'href'.
+        <attribute>-value = _adjust_a_href( <attribute>-value ).
+      WHEN 'src'.
+        <attribute>-value = _adjust_img_src( <attribute>-value ).
+    ENDCASE.
     "<<< apm
 
     " Check for allowed protocols
@@ -2875,7 +2876,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       marker                TYPE string,
       ref_block_types       TYPE REF TO lcl_string_array,
       ref_sa                TYPE REF TO lcl_string_array,
-      blocks                TYPE TABLE OF ty_block,
+      blocks                TYPE STANDARD TABLE OF ty_block WITH EMPTY KEY,
       block_markup          TYPE string.
 
     FIELD-SYMBOLS:

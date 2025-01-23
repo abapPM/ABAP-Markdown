@@ -5,7 +5,7 @@
 "! Value type interface
 "!
 INTERFACE lif_value_type.
-  METHODS: copy IMPORTING source TYPE REF TO lif_value_type.
+  METHODS copy IMPORTING source TYPE REF TO lif_value_type.
 ENDINTERFACE.
 
 "!
@@ -14,8 +14,10 @@ ENDINTERFACE.
 CLASS lcl_string DEFINITION FINAL.
   PUBLIC SECTION.
     INTERFACES lif_value_type.
-    DATA: data TYPE string.
-    ALIASES: copy FOR lif_value_type~copy.
+
+    DATA data TYPE string.
+
+    ALIASES copy FOR lif_value_type~copy.
 ENDCLASS.
 
 "!
@@ -24,7 +26,8 @@ ENDCLASS.
 CLASS lcl_string_array DEFINITION FINAL.
   PUBLIC SECTION.
     INTERFACES lif_value_type.
-    DATA: data TYPE TABLE OF string.
+
+    DATA data TYPE string_table.
 
     METHODS:
       append IMPORTING value TYPE clike,
@@ -32,7 +35,7 @@ CLASS lcl_string_array DEFINITION FINAL.
       delete IMPORTING value TYPE clike,
       find_val IMPORTING value TYPE clike RETURNING VALUE(index) TYPE i.
 
-    ALIASES: copy FOR lif_value_type~copy.
+    ALIASES copy FOR lif_value_type~copy.
 ENDCLASS.
 
 "!
@@ -49,6 +52,7 @@ ENDCLASS.
 CLASS lcl_hashmap DEFINITION FINAL.
   PUBLIC SECTION.
     INTERFACES lif_value_type.
+
     TYPES:
       BEGIN OF ty_item,
         key   TYPE string,
@@ -56,7 +60,7 @@ CLASS lcl_hashmap DEFINITION FINAL.
       END OF ty_item,
       ty_hashmap TYPE HASHED TABLE OF ty_item WITH UNIQUE KEY key.
 
-    DATA: data TYPE ty_hashmap.
+    DATA data TYPE ty_hashmap.
 
     METHODS:
       constructor
@@ -97,6 +101,7 @@ ENDCLASS.
 "!
 CLASS lcl_alerts DEFINITION FINAL.
   PUBLIC SECTION.
+
     TYPES:
       BEGIN OF ty_alert,
         tag   TYPE string,
