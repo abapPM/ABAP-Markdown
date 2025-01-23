@@ -32,13 +32,13 @@ CLASS ltcl_string_tests IMPLEMENTATION.
     DATA o_new TYPE REF TO lcl_string.
 
     o_string = NEW #( ).
-    o_string->data = 'SpongeBob'.
+    o_string->set_data( 'SpongeBob' ).
 
     o_new = NEW #( ).
     o_new->lif_value_type~copy( o_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'SpongeBob'
-      act = o_new->data ).
+      act = o_new->get_data( ) ).
   ENDMETHOD.                    "copying
 ENDCLASS.                    "string_tests IMPLEMENTATION
 
@@ -73,7 +73,7 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
     o_new = NEW #( ).
     o_new->lif_value_type~copy( o_sa ).
 
-    CONCATENATE LINES OF o_new->data INTO conc.
+    CONCATENATE LINES OF o_new->get_data( ) INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
       act = conc ).
@@ -88,7 +88,7 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
     o_sa->append( 'Three' ).
 
 
-    CONCATENATE LINES OF o_sa->data INTO conc.
+    CONCATENATE LINES OF o_sa->get_data( ) INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
       act = conc ).
@@ -106,7 +106,7 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
     o_new = NEW #( ).
     o_new->append_array( o_sa ).
 
-    CONCATENATE LINES OF o_new->data INTO conc.
+    CONCATENATE LINES OF o_new->get_data( ) INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
       act = conc ).
@@ -122,7 +122,7 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
 
     o_sa->delete( 'Two' ).
 
-    CONCATENATE LINES OF o_sa->data INTO conc.
+    CONCATENATE LINES OF o_sa->get_data( ) INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneThree'
       act = conc ).
@@ -174,14 +174,14 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
     o_hm = NEW #( value_type = 'lcl_string' ).
 
     o_value ?= o_hm->new( 'IdxOne' ).
-    o_value->data = 'ValueOne'.
+    o_value->set_data( 'ValueOne' ).
 
     o_new = NEW #( value_type = 'lcl_string' ).
     o_new->lif_value_type~copy( o_hm ).
     o_value ?= o_new->get( 'IdxOne' ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = o_value->data ).
+      act = o_value->get_data( ) ).
   ENDMETHOD.                    "copying
 
   METHOD create_string_hashmap.
@@ -220,12 +220,12 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
   ENDMETHOD.                    "create_4_dimension_hashmap
 
   METHOD new.
-    DATA: o_string TYPE REF TO lcl_string.
+    DATA o_string TYPE REF TO lcl_string.
 
     o_hm = NEW #( ).
     o_string ?= o_hm->new( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_string ).
-    o_string->data = 'ValueOne'.
+    o_string->set_data( 'ValueOne' ).
 
     o_string ?= o_hm->new( 'IdxOne' ).
     cl_aunit_assert=>assert_initial( o_string ).
@@ -237,13 +237,13 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
     o_hm = NEW #( ).
     o_string ?= o_hm->get( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_string ).
-    o_string->data = 'ValueOne'.
+    o_string->set_data( 'ValueOne' ).
 
     o_string ?= o_hm->get( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = o_string->data ).
+      act = o_string->get_data( ) ).
   ENDMETHOD.                    "get
 
   METHOD set.
@@ -251,13 +251,13 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
           o_str2 TYPE REF TO lcl_string.
 
     o_str1 = NEW #( ).
-    o_str1->data = 'ValueOne'.
+    o_str1->set_data( 'ValueOne' ).
 
     o_hm = NEW #( ).
 
     o_str2 ?= o_hm->get( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_str2 ).
-    cl_aunit_assert=>assert_initial( o_str2->data ).
+    cl_aunit_assert=>assert_initial( o_str2->get_data( ) ).
 
     o_hm->set(
       key = 'IdxOne'
@@ -267,7 +267,7 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
     cl_aunit_assert=>assert_not_initial( o_str2 ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = o_str2->data ).
+      act = o_str2->get_data( ) ).
   ENDMETHOD.                    "set
 
   METHOD exists.

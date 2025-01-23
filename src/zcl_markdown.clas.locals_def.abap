@@ -15,6 +15,15 @@ CLASS lcl_string DEFINITION FINAL.
   PUBLIC SECTION.
     INTERFACES lif_value_type.
 
+    METHODS:
+      get_data
+        RETURNING
+          VALUE(result) TYPE string,
+      set_data
+        IMPORTING
+          data TYPE string.
+
+  PRIVATE SECTION.
     DATA data TYPE string.
 ENDCLASS.
 
@@ -25,13 +34,30 @@ CLASS lcl_string_array DEFINITION FINAL.
   PUBLIC SECTION.
     INTERFACES lif_value_type.
 
-    DATA data TYPE string_table.
-
     METHODS:
-      append IMPORTING value TYPE clike,
-      append_array IMPORTING array TYPE REF TO lcl_string_array,
-      delete IMPORTING value TYPE clike,
-      find_val IMPORTING value TYPE clike RETURNING VALUE(index) TYPE i.
+      append
+        IMPORTING
+          value TYPE clike,
+      append_array
+        IMPORTING
+          array TYPE REF TO lcl_string_array,
+      delete
+        IMPORTING
+          value TYPE clike,
+      find_val
+        IMPORTING
+          value        TYPE clike
+        RETURNING
+          VALUE(index) TYPE i,
+      get_data
+        RETURNING
+          VALUE(result) TYPE string_table,
+      set_data
+        IMPORTING
+          data TYPE string_table.
+
+  PRIVATE SECTION.
+    DATA data TYPE string_table.
 ENDCLASS.
 
 "!
@@ -55,8 +81,6 @@ CLASS lcl_hashmap DEFINITION FINAL.
         value TYPE REF TO lif_value_type,
       END OF ty_item,
       ty_hashmap TYPE HASHED TABLE OF ty_item WITH UNIQUE KEY key.
-
-    DATA data TYPE ty_hashmap.
 
     METHODS:
       constructor
@@ -83,9 +107,17 @@ CLASS lcl_hashmap DEFINITION FINAL.
           value TYPE REF TO lif_value_type,
       delete
         IMPORTING
-          key TYPE string.
+          key TYPE string,
+      get_data
+        RETURNING
+          VALUE(result) TYPE ty_hashmap,
+      set_data
+        IMPORTING
+          data TYPE ty_hashmap.
 
   PRIVATE SECTION.
+    DATA data TYPE ty_hashmap.
+
     DATA: value_type                    TYPE string,
           subsequent_hashmap_value_type TYPE string.
 ENDCLASS.
@@ -105,29 +137,25 @@ CLASS lcl_alerts DEFINITION FINAL.
         text  TYPE string,
       END OF ty_alert.
 
-    CLASS-METHODS get
-      IMPORTING
-        line          TYPE string
-      RETURNING
-        VALUE(result) TYPE ty_alert.
-
-    CLASS-METHODS note
-      RETURNING
-        VALUE(result) TYPE string.
-
-    CLASS-METHODS tip
-      RETURNING
-        VALUE(result) TYPE string.
-
-    CLASS-METHODS important
-      RETURNING
-        VALUE(result) TYPE string.
-
-    CLASS-METHODS warning
-      RETURNING
-        VALUE(result) TYPE string.
-
-    CLASS-METHODS caution
-      RETURNING
-        VALUE(result) TYPE string.
+    CLASS-METHODS:
+      get
+        IMPORTING
+          line          TYPE string
+        RETURNING
+          VALUE(result) TYPE ty_alert,
+      note
+        RETURNING
+          VALUE(result) TYPE string,
+      tip
+        RETURNING
+          VALUE(result) TYPE string,
+      important
+        RETURNING
+          VALUE(result) TYPE string,
+      warning
+        RETURNING
+          VALUE(result) TYPE string,
+      caution
+        RETURNING
+          VALUE(result) TYPE string.
 ENDCLASS.

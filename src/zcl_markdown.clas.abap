@@ -207,7 +207,7 @@ CLASS zcl_markdown DEFINITION
 
     DATA breaks_enabled TYPE abap_bool.
     DATA markup_escaped TYPE abap_bool.
-    DATA urls_linked TYPE abap_bool VALUE abap_true ##NO_TEXT.
+    DATA urls_linked TYPE abap_bool VALUE abap_true.
     DATA safe_mode TYPE abap_bool.
     DATA block_types TYPE REF TO lcl_hashmap.
     DATA unmarked_block_types TYPE REF TO lcl_string_array.
@@ -246,7 +246,7 @@ CLASS zcl_markdown DEFINITION
         !str          TYPE string
         VALUE(mask)   TYPE string DEFAULT ' \t\n\r'
       RETURNING
-        VALUE(result) TYPE string.
+        VALUE(result) TYPE string ##CALLED.
 
     CLASS-METHODS magic_move
       IMPORTING
@@ -285,240 +285,242 @@ CLASS zcl_markdown DEFINITION
       RETURNING
         VALUE(result) TYPE string.
 
+    " Dynamically called methods
+
     METHODS block_code
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_code_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_code_complete
       IMPORTING
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_comment
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_comment_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_fencedcode
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_fencedcode_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_fencedcode_complete
       IMPORTING
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_header
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_list
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_list_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_list_complete
       IMPORTING
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_quote
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_quote_complete
       IMPORTING
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_quote_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_rule
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_setextheader
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_markup
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_markup_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_reference
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_table
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS block_table_continue
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS paragraph
       IMPORTING
         !line         TYPE ty_line
       RETURNING
-        VALUE(result) TYPE ty_block.
+        VALUE(result) TYPE ty_block ##CALLED.
 
     METHODS line
       IMPORTING
         !element      TYPE ty_element4
       RETURNING
-        VALUE(result) TYPE string.
+        VALUE(result) TYPE string ##CALLED.
 
     METHODS inline_code
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_emailtag
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_emphasis
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_escapesequence
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_image
       IMPORTING
         VALUE(excerpt) TYPE ty_excerpt
       RETURNING
-        VALUE(result)  TYPE ty_inline.
+        VALUE(result)  TYPE ty_inline ##CALLED.
 
     METHODS inline_link
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_markup
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_specialcharacter
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_strikethrough
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_url
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_urltag
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     ">>> apm
     METHODS inline_highlight
       IMPORTING
         !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result) TYPE ty_inline.
+        VALUE(result) TYPE ty_inline ##CALLED.
     "<<< apm
 
     METHODS unmarked_text
@@ -735,7 +737,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     CHECK strlen( line-text ) > 1 AND line-text+1(1) IS NOT INITIAL.
 
-    WHILE level < strlen( line-text ) AND line-text+level(1) = '#'.
+    WHILE strlen( line-text ) > level AND line-text+level(1) = '#'.
       level = level + 1.
     ENDWHILE.
 
@@ -1081,10 +1083,10 @@ CLASS zcl_markdown IMPLEMENTATION.
       ref_item ?= ref_map->get( id ).
 
       ref_val ?= ref_item->get( 'url' ).
-      ref_val->data = m2.
+      ref_val->set_data( m2 ).
       IF m3 IS NOT INITIAL.
         ref_val ?= ref_item->get( 'title' ).
-        ref_val->data = m4.
+        ref_val->set_data( m4 ).
       ENDIF.
 
       result-hidden = abap_true.
@@ -1470,20 +1472,20 @@ CLASS zcl_markdown IMPLEMENTATION.
     strong_regex = NEW #( ).
 
     string ?= strong_regex->new( '*' ).
-    string->data = '(^[*][*]((?:\\[*]|[^*]|[*][^*]*[*])+)[*][*](?![*]))'.
+    string->set_data( '(^[*][*]((?:\\[*]|[^*]|[*][^*]*[*])+)[*][*](?![*]))' ).
     string ?= strong_regex->new( '_' ).
-    string->data = '(^__((?:\\_|[^_]|_[^_]*_)+)__(?!_))'.
+    string->set_data( '(^__((?:\\_|[^_]|_[^_]*_)+)__(?!_))' ).
 
     em_regex = NEW #( ).
 
     string ?= em_regex->new( '*' ).
-    string->data = '(^[*]((?:\\[*]|[^*]|[*][*][^*]+[*][*])+)[*](?![*]))'.
+    string->set_data( '(^[*]((?:\\[*]|[^*]|[*][*][^*]+[*][*])+)[*](?![*]))' ).
     string ?= em_regex->new( '_' ).
-    string->data = '(^_((?:\\_|[^_]|__[^_]*__)+)_(?!_)\b)'.
+    string->set_data( '(^_((?:\\_|[^_]|__[^_]*__)+)_(?!_)\b)' ).
     string ?= em_regex->new( '^' ).
-    string->data = '(^[\^]((?:\\[\^]|[^\^]|[\^][\^][^\^]+[\^][\^])+)[\^](?![\^]))'.
+    string->set_data( '(^[\^]((?:\\[\^]|[^\^]|[\^][\^][^\^]+[\^][\^])+)[\^](?![\^]))' ).
     string ?= em_regex->new( '~' ).
-    string->data = '(^~((?:\\~|[^~]|~~[^~]*~~)+)~(?!~)\b)'.
+    string->set_data( '(^~((?:\\~|[^~]|~~[^~]*~~)+)~(?!~)\b)' ).
     regex_html_attribute = '[a-zA-Z_:][\w:.-]*(?:\s*=\s*(?:[^"''=<>`\s]+|"[^"]*"|''[^'']*''))?'.
 
     void_elements = NEW #( ).
@@ -1683,7 +1685,7 @@ CLASS zcl_markdown IMPLEMENTATION.
   METHOD filter_unsafe_url_in_attribute.
     FIELD-SYMBOLS:
       <attribute> LIKE LINE OF result-attributes,
-      <scheme>    LIKE LINE OF safe_links_whitelist->data.
+      <scheme>    TYPE string. "safe_links_whitelist->data.
 
     result = element.
 
@@ -1700,7 +1702,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     "<<< apm
 
     " Check for allowed protocols
-    LOOP AT safe_links_whitelist->data ASSIGNING <scheme>.
+    LOOP AT safe_links_whitelist->get_data( ) ASSIGNING <scheme>.
       IF string_at_start(
         haystack = <attribute>-value
         needle   = <scheme> ) = abap_true.
@@ -1826,8 +1828,8 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     regex ?= strong_regex->get( marker ).
     IF strlen( excerpt-text ) > 1 AND excerpt-text+1(1) = marker AND
-       regex->data IS NOT INITIAL.
-      FIND REGEX regex->data IN excerpt-text SUBMATCHES m0 m1.
+       regex->get_data( ) IS NOT INITIAL.
+      FIND REGEX regex->get_data( ) IN excerpt-text SUBMATCHES m0 m1.
       IF sy-subrc = 0.
         emphasis = 'strong'.
 
@@ -1845,8 +1847,8 @@ CLASS zcl_markdown IMPLEMENTATION.
     ENDIF.
 
     regex ?= em_regex->get( marker ).
-    IF emphasis IS INITIAL AND regex->data IS NOT INITIAL.
-      FIND REGEX regex->data IN excerpt-text SUBMATCHES m0 m1.
+    IF emphasis IS INITIAL AND regex->get_data( ) IS NOT INITIAL.
+      FIND REGEX regex->get_data( ) IN excerpt-text SUBMATCHES m0 m1.
       IF sy-subrc = 0.
         ">>> apm
         CASE marker.
@@ -2030,14 +2032,14 @@ CLASS zcl_markdown IMPLEMENTATION.
       def_val ?= def_map->get( 'url' ).
       APPEND INITIAL LINE TO result-element-attributes ASSIGNING <attribute>.
       <attribute>-name = 'href'.
-      <attribute>-value = _adjust_a_href( def_val->data ). " apm
+      <attribute>-value = _adjust_a_href( def_val->get_data( ) ). " apm
 
       exists = def_map->exists( 'title' ).
       IF exists IS NOT INITIAL.
         def_val ?= def_map->get( 'title' ).
         APPEND INITIAL LINE TO result-element-attributes ASSIGNING <attribute>.
         <attribute>-name = 'title'.
-        <attribute>-value = def_val->data.
+        <attribute>-value = def_val->get_data( ).
       ENDIF.
     ENDIF.
   ENDMETHOD.                    "inline_Link
@@ -2209,7 +2211,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       markup_part     TYPE string,
       continue_loop   TYPE abap_bool.
 
-    FIELD-SYMBOLS <inline_type> LIKE LINE OF inline_types_sa->data.
+    FIELD-SYMBOLS <inline_type> TYPE string. "inline_types_sa->data.
 
     " text contains the unexamined text
     " excerpt-text is based on the first occurrence of a marker
@@ -2228,7 +2230,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
       inline_types_sa ?= inline_types->get( marker ).
       CLEAR continue_loop.
-      LOOP AT inline_types_sa->data ASSIGNING <inline_type>.
+      LOOP AT inline_types_sa->get_data( ) ASSIGNING <inline_type>.
         CONCATENATE 'inline_' <inline_type> INTO method_name.
         TRANSLATE method_name TO UPPER CASE.
         CALL METHOD (method_name)
@@ -2249,7 +2251,7 @@ CLASS zcl_markdown IMPLEMENTATION.
         ENDIF.
 
         " the text that comes before the inline
-        IF inline-position <= strlen( text ).
+        IF strlen( text ) >= inline-position.
           unmarked_text = text(inline-position).
         ELSE.
           unmarked_text = text.
@@ -2269,7 +2271,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
         " remove the examined text
         pos = inline-position + inline-extent.
-        IF pos <= strlen( text ).
+        IF strlen( text ) >= pos.
           text = text+pos.
         ELSE.
           CLEAR text.
@@ -2282,14 +2284,14 @@ CLASS zcl_markdown IMPLEMENTATION.
 
       " the marker does not belong to an inline
       marker_position = marker_position + 1.
-      IF marker_position <= strlen( text ).
+      IF strlen( text ) >= marker_position.
         unmarked_text = text(marker_position).
       ELSE.
         unmarked_text = text.
       ENDIF.
       markup_part = unmarked_text( unmarked_text ).
       CONCATENATE result markup_part INTO result.
-      IF marker_position <= strlen( text ).
+      IF strlen( text ) >= marker_position.
         text = text+marker_position.
       ELSE.
         CLEAR text.
@@ -2533,7 +2535,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     IF strlen( haystack ) < len.
       result = abap_false.
     ELSE.
-      result = boolc( to_lower( haystack+0(len) ) = needle ).
+      result = xsdbool( to_lower( haystack+0(len) ) = needle ).
     ENDIF.
   ENDMETHOD.
 
@@ -2647,8 +2649,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       language        TYPE string,
       current_element TYPE ty_element.
 
-    FIELD-SYMBOLS:
-      <attribute> LIKE LINE OF current_element-attributes.
+    FIELD-SYMBOLS <attribute> LIKE LINE OF current_element-attributes.
 
     magic_move(
       EXPORTING
@@ -2965,7 +2966,8 @@ CLASS zcl_markdown IMPLEMENTATION.
       ref_block_types = NEW #( ).
       ref_block_types->lif_value_type~copy( unmarked_block_types ).
 
-      READ TABLE block_types->data ASSIGNING <block_type>
+      data(block_types_data) = block_types->get_data( ).
+      READ TABLE block_types_data ASSIGNING <block_type>
         WITH KEY key = marker.
       IF sy-subrc = 0.
         ref_sa ?= <block_type>-value.
@@ -2974,7 +2976,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
       " ~
 
-      LOOP AT ref_block_types->data ASSIGNING <block_type_name>.
+      LOOP AT ref_block_types->get_data( ) ASSIGNING <block_type_name>.
         CLEAR block.
         CONCATENATE 'block_' <block_type_name> INTO method_name.
         TRANSLATE method_name TO UPPER CASE.

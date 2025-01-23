@@ -1,5 +1,12 @@
 *!
 CLASS lcl_string IMPLEMENTATION.
+  METHOD get_data.
+    result = data.
+  ENDMETHOD.
+  METHOD set_data.
+    me->data = data.
+  ENDMETHOD.
+
   METHOD lif_value_type~copy.
     " Copies the value of the source object to itself
     DATA string TYPE REF TO lcl_string.
@@ -11,6 +18,13 @@ ENDCLASS.
 
 *!
 CLASS lcl_string_array IMPLEMENTATION.
+  METHOD get_data.
+    result = data.
+  ENDMETHOD.
+  METHOD set_data.
+    me->data = data.
+  ENDMETHOD.
+
   METHOD append.
     " Append a value to the end of the array
     APPEND value TO me->data.
@@ -125,6 +139,13 @@ CLASS lcl_hashmap IMPLEMENTATION.
   METHOD delete.
     " Deletes an item from the hashmap.
     DELETE me->data WHERE key = key.
+  ENDMETHOD.
+
+  METHOD get_data.
+    result = data.
+  ENDMETHOD.
+  METHOD set_data.
+    me->data = data.
   ENDMETHOD.
 
   METHOD lif_value_type~copy.
