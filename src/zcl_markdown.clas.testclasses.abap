@@ -19,19 +19,23 @@
 "! Unit test class for the string template class
 "!
 CLASS ltcl_string_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
+
   PRIVATE SECTION.
     DATA o_string TYPE REF TO lcl_string.
+
     METHODS copying FOR TESTING.
 ENDCLASS.                    "string_tests DEFINITION
 *!
 CLASS ltcl_string_tests IMPLEMENTATION.
+
   METHOD copying.
     DATA o_new TYPE REF TO lcl_string.
+
     o_string = NEW #( ).
     o_string->data = 'SpongeBob'.
 
     o_new = NEW #( ).
-    o_new->copy( o_string ).
+    o_new->lif_value_type~copy( o_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'SpongeBob'
       act = o_new->data ).
@@ -43,8 +47,10 @@ ENDCLASS.                    "string_tests IMPLEMENTATION
 "! Unit test class for the string array template class
 "!
 CLASS ltcl_string_array_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
+
   PRIVATE SECTION.
-    DATA: o_sa TYPE REF TO lcl_string_array.
+    DATA o_sa TYPE REF TO lcl_string_array.
+
     METHODS:
       copying FOR TESTING,
       append FOR TESTING,
@@ -54,16 +60,18 @@ CLASS ltcl_string_array_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATIO
 ENDCLASS.                    "string_array_tests DEFINITION
 *!
 CLASS ltcl_string_array_tests IMPLEMENTATION.
+
   METHOD copying.
     DATA o_new TYPE REF TO lcl_string_array.
     DATA conc TYPE string.
-    CREATE OBJECT o_sa.
+
+    o_sa = NEW #( ).
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    CREATE OBJECT o_new.
-    o_new->copy( o_sa ).
+    o_new = NEW #( ).
+    o_new->lif_value_type~copy( o_sa ).
 
     CONCATENATE LINES OF o_new->data INTO conc.
     cl_aunit_assert=>assert_equals(
@@ -73,7 +81,8 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
 
   METHOD append.
     DATA conc TYPE string.
-    CREATE OBJECT o_sa.
+
+    o_sa = NEW #( ).
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
@@ -88,12 +97,13 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
   METHOD append_array.
     DATA o_new TYPE REF TO lcl_string_array.
     DATA conc TYPE string.
-    CREATE OBJECT o_sa.
+
+    o_sa = NEW #( ).
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    CREATE OBJECT o_new.
+    o_new = NEW #( ).
     o_new->append_array( o_sa ).
 
     CONCATENATE LINES OF o_new->data INTO conc.
@@ -104,13 +114,13 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
 
   METHOD delete.
     DATA conc TYPE string.
-    CREATE OBJECT o_sa.
+
+    o_sa = NEW #( ).
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
     o_sa->delete( 'Two' ).
-
 
     CONCATENATE LINES OF o_sa->data INTO conc.
     cl_aunit_assert=>assert_equals(
@@ -120,11 +130,11 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
 
   METHOD find_val.
     DATA index TYPE i.
-    CREATE OBJECT o_sa.
+
+    o_sa = NEW #( ).
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
-
 
     index = o_sa->find_val( 'Two' ).
     cl_aunit_assert=>assert_equals(
@@ -138,8 +148,10 @@ ENDCLASS.                    "string_array_tests IMPLEMENTATION
 "! Unit test class for the hashmap template class
 "!
 CLASS ltcl_hashmap_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
+
   PRIVATE SECTION.
-    DATA: o_hm TYPE REF TO lcl_hashmap.
+    DATA o_hm TYPE REF TO lcl_hashmap.
+
     METHODS:
       copying FOR TESTING,
       create_string_hashmap FOR TESTING,
@@ -154,20 +166,18 @@ CLASS ltcl_hashmap_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHO
 ENDCLASS.                    "hashmap_tests DEFINITION
 *!
 CLASS ltcl_hashmap_tests IMPLEMENTATION.
+
   METHOD copying.
     DATA o_value TYPE REF TO lcl_string.
     DATA o_new TYPE REF TO lcl_hashmap.
-    CREATE OBJECT o_hm
-      EXPORTING
-        value_type = 'lcl_string'.
+
+    o_hm = NEW #( value_type = 'lcl_string' ).
 
     o_value ?= o_hm->new( 'IdxOne' ).
     o_value->data = 'ValueOne'.
 
-    CREATE OBJECT o_new
-      EXPORTING
-        value_type = 'lcl_string'.
-    o_new->copy( o_hm ).
+    o_new = NEW #( value_type = 'lcl_string' ).
+    o_new->lif_value_type~copy( o_hm ).
     o_value ?= o_new->get( 'IdxOne' ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
@@ -175,29 +185,26 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
   ENDMETHOD.                    "copying
 
   METHOD create_string_hashmap.
-    DATA: o_string TYPE REF TO lcl_string.
-    CREATE OBJECT o_hm. "// default
+    DATA o_string TYPE REF TO lcl_string.
+
+    o_hm = NEW #( ). "// default
     o_string ?= o_hm->new( 'IdxOne' ).
 
-    CREATE OBJECT o_hm
-      EXPORTING
-        value_type = 'lcl_string'.
+    o_hm = NEW #( value_type = 'lcl_string' ).
     o_string ?= o_hm->new( 'IdxOne' ).
   ENDMETHOD.                    "create_string_hashmap
 
   METHOD create_array_hashmap.
-    DATA: o_array TYPE REF TO lcl_string_array.
-    CREATE OBJECT o_hm
-      EXPORTING
-        value_type = 'lcl_string_array'.
+    DATA o_array TYPE REF TO lcl_string_array.
+
+    o_hm = NEW #( value_type = 'lcl_string_array' ).
     o_array ?= o_hm->new( 'IdxOne' ).
   ENDMETHOD.                    "create_array_hashmap
 
   METHOD create_hashmap_hashmap.
-    DATA: o_hashmap TYPE REF TO lcl_hashmap.
-    CREATE OBJECT o_hm
-      EXPORTING
-        value_type = 'lcl_hashmap'.
+    DATA o_hashmap TYPE REF TO lcl_hashmap.
+
+    o_hm = NEW #( value_type = 'lcl_hashmap' ).
     o_hashmap ?= o_hm->new( 'IdxOne' ).
   ENDMETHOD.                    "create_hashmap_hashmap
 
@@ -205,9 +212,8 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
     DATA: o_hashmap1 TYPE REF TO lcl_hashmap,
           o_hashmap2 TYPE REF TO lcl_hashmap,
           o_hashmap3 TYPE REF TO lcl_hashmap.
-    CREATE OBJECT o_hm
-      EXPORTING
-        value_type = 'lcl_hashmap:lcl_hashmap:lcl_hashmap'.
+
+    o_hm = NEW #( value_type = 'lcl_hashmap:lcl_hashmap:lcl_hashmap' ).
     o_hashmap1 ?= o_hm->new( 'IdxOne' ).
     o_hashmap2 ?= o_hashmap1->new( 'IdxTwo' ).
     o_hashmap3 ?= o_hashmap2->new( 'IdxThree' ).
@@ -215,7 +221,8 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
 
   METHOD new.
     DATA: o_string TYPE REF TO lcl_string.
-    CREATE OBJECT o_hm.
+
+    o_hm = NEW #( ).
     o_string ?= o_hm->new( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_string ).
     o_string->data = 'ValueOne'.
@@ -225,8 +232,9 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
   ENDMETHOD.                    "new
 
   METHOD get.
-    DATA: o_string TYPE REF TO lcl_string.
-    CREATE OBJECT o_hm.
+    DATA o_string TYPE REF TO lcl_string.
+
+    o_hm = NEW #( ).
     o_string ?= o_hm->get( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_string ).
     o_string->data = 'ValueOne'.
@@ -241,10 +249,11 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
   METHOD set.
     DATA: o_str1 TYPE REF TO lcl_string,
           o_str2 TYPE REF TO lcl_string.
-    CREATE OBJECT o_str1.
+
+    o_str1 = NEW #( ).
     o_str1->data = 'ValueOne'.
 
-    CREATE OBJECT o_hm.
+    o_hm = NEW #( ).
 
     o_str2 ?= o_hm->get( 'IdxOne' ).
     cl_aunit_assert=>assert_not_initial( o_str2 ).
@@ -263,9 +272,8 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
 
   METHOD exists.
     DATA exists TYPE abap_bool.
-    CREATE OBJECT o_hm.
 
-
+    o_hm = NEW #( ).
     o_hm->new( 'IdxOne' ).
 
     exists = o_hm->exists( 'IdxOne' ).
@@ -277,11 +285,11 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
 
   METHOD delete.
     DATA exists TYPE abap_bool.
-    CREATE OBJECT o_hm.
+
+    o_hm = NEW #( ).
     o_hm->new( 'IdxOne' ).
     o_hm->new( 'IdxTwo' ).
     o_hm->new( 'IdxThree' ).
-
 
     exists = o_hm->exists( 'IdxTwo' ).
     cl_aunit_assert=>assert_not_initial( exists ).

@@ -2530,7 +2530,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     len = strlen( needle ).
 
-    IF len > strlen( haystack ).
+    IF strlen( haystack ) < len.
       result = abap_false.
     ELSE.
       result = boolc( to_lower( haystack+0(len) ) = needle ).
@@ -2963,7 +2963,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       " ~
 
       ref_block_types = NEW #( ).
-      ref_block_types->copy( unmarked_block_types ).
+      ref_block_types->lif_value_type~copy( unmarked_block_types ).
 
       READ TABLE block_types->data ASSIGNING <block_type>
         WITH KEY key = marker.
@@ -2972,7 +2972,6 @@ CLASS zcl_markdown IMPLEMENTATION.
         ref_block_types->append_array( ref_sa ).
       ENDIF.
 
-      "
       " ~
 
       LOOP AT ref_block_types->data ASSIGNING <block_type_name>.

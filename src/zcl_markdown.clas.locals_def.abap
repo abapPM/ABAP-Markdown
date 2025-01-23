@@ -16,8 +16,6 @@ CLASS lcl_string DEFINITION FINAL.
     INTERFACES lif_value_type.
 
     DATA data TYPE string.
-
-    ALIASES copy FOR lif_value_type~copy.
 ENDCLASS.
 
 "!
@@ -34,8 +32,6 @@ CLASS lcl_string_array DEFINITION FINAL.
       append_array IMPORTING array TYPE REF TO lcl_string_array,
       delete IMPORTING value TYPE clike,
       find_val IMPORTING value TYPE clike RETURNING VALUE(index) TYPE i.
-
-    ALIASES copy FOR lif_value_type~copy.
 ENDCLASS.
 
 "!
@@ -88,8 +84,6 @@ CLASS lcl_hashmap DEFINITION FINAL.
       delete
         IMPORTING
           key TYPE string.
-
-    ALIASES: copy FOR lif_value_type~copy.
 
   PRIVATE SECTION.
     DATA: value_type                    TYPE string,
