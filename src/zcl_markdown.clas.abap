@@ -292,7 +292,7 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_code_continue
       IMPORTING
@@ -312,7 +312,7 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_comment_continue
       IMPORTING
@@ -326,7 +326,7 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_fencedcode_continue
       IMPORTING
@@ -346,14 +346,14 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_list
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_list_continue
       IMPORTING
@@ -373,7 +373,7 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_quote_complete
       IMPORTING
@@ -393,21 +393,21 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_setextheader
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_markup
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_markup_continue
       IMPORTING
@@ -421,14 +421,14 @@ CLASS zcl_markdown DEFINITION
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_table
       IMPORTING
         !line         TYPE ty_line
         !block        TYPE ty_block OPTIONAL
       RETURNING
-        VALUE(result) TYPE ty_block ##CALLED.
+        VALUE(result) TYPE ty_block ##CALLED ##NEEDED.
 
     METHODS block_table_continue
       IMPORTING
@@ -539,13 +539,13 @@ CLASS zcl_markdown DEFINITION
       IMPORTING
         !elements     TYPE STANDARD TABLE
       RETURNING
-        VALUE(result) TYPE string.
+        VALUE(result) TYPE string ##CALLED.
 
     METHODS li
       IMPORTING
         !lines        TYPE STANDARD TABLE
       RETURNING
-        VALUE(result) TYPE string.
+        VALUE(result) TYPE string ##CALLED.
 
     METHODS filter_unsafe_url_in_attribute
       IMPORTING
@@ -590,7 +590,7 @@ CLASS zcl_markdown DEFINITION
       IMPORTING
         !element      TYPE any
       RETURNING
-        VALUE(result) TYPE string.
+        VALUE(result) TYPE string ##CALLED.
     "<<< apm
 ENDCLASS.
 
