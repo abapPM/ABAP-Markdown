@@ -2178,8 +2178,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     result = _lines( lines ).
     trimmed_markup = trim( result ).
 
-    READ TABLE lines TRANSPORTING NO FIELDS WITH KEY table_line = ''.
-    IF sy-subrc <> 0 AND strlen( trimmed_markup ) >= 3 AND trimmed_markup(3) = '<p>'.
+    IF NOT line_exists( lines[ table_line = '' ] ) AND strlen( trimmed_markup ) >= 3 AND trimmed_markup(3) = '<p>'.
       result = trimmed_markup+3.
       FIND '</p>' IN result MATCH OFFSET fdpos ##SUBRC_OK.
       pos_to = fdpos + 4.
@@ -2945,8 +2944,7 @@ CLASS zcl_markdown IMPLEMENTATION.
         ELSE.
           CONCATENATE 'block_' current_block-type '_complete' INTO method_name.
           TRANSLATE method_name TO UPPER CASE.
-          READ TABLE methods TRANSPORTING NO FIELDS WITH KEY table_line = method_name.
-          IF sy-subrc = 0.
+          IF line_exists( methods[ table_line = method_name ] ).
             CALL METHOD (method_name)
               EXPORTING
                 block  = current_block
@@ -2966,7 +2964,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       ref_block_types = NEW #( ).
       ref_block_types->lif_value_type~copy( unmarked_block_types ).
 
-      data(block_types_data) = block_types->get_data( ).
+      DATA(block_types_data) = block_types->get_data( ).
       READ TABLE block_types_data ASSIGNING <block_type>
         WITH KEY key = marker.
       IF sy-subrc = 0.
@@ -2997,8 +2995,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
           CONCATENATE 'block_' <block_type_name> '_continue' INTO method_name.
           TRANSLATE method_name TO UPPER CASE.
-          READ TABLE methods TRANSPORTING NO FIELDS WITH KEY table_line = method_name.
-          IF sy-subrc = 0.
+          IF line_exists( methods[ table_line = method_name ] ).
             block-continuable = abap_true.
           ENDIF.
 
@@ -3035,8 +3032,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     IF current_block-continuable IS NOT INITIAL.
       CONCATENATE 'block_' current_block-type '_complete' INTO method_name.
       TRANSLATE method_name TO UPPER CASE.
-      READ TABLE methods TRANSPORTING NO FIELDS WITH KEY table_line = method_name.
-      IF sy-subrc = 0.
+      IF line_exists( methods[ table_line = method_name ] ).
         CALL METHOD (method_name)
           EXPORTING
             block  = current_block

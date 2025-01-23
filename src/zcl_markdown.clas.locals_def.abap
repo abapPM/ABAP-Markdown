@@ -48,7 +48,7 @@ CLASS lcl_string_array DEFINITION FINAL.
         IMPORTING
           value        TYPE clike
         RETURNING
-          VALUE(index) TYPE i,
+          VALUE(result) TYPE i,
       get_data
         RETURNING
           VALUE(result) TYPE string_table,
@@ -90,17 +90,17 @@ CLASS lcl_hashmap DEFINITION FINAL.
         IMPORTING
           key          TYPE clike
         RETURNING
-          VALUE(value) TYPE REF TO lif_value_type,
+          VALUE(result) TYPE REF TO lif_value_type,
       exists
         IMPORTING
           key           TYPE clike
         RETURNING
-          VALUE(exists) TYPE abap_bool,
+          VALUE(result) TYPE abap_bool,
       get
         IMPORTING
           key          TYPE clike
         RETURNING
-          VALUE(value) TYPE REF TO lif_value_type,
+          VALUE(result) TYPE REF TO lif_value_type,
       set
         IMPORTING
           key   TYPE clike

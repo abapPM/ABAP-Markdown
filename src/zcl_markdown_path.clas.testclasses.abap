@@ -2,7 +2,7 @@ CLASS ltcl_path_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS
   DURATION SHORT FINAL.
 
   PRIVATE SECTION.
-    DATA mo_cut TYPE REF TO zcl_markdown_path.
+    DATA cut TYPE REF TO zcl_markdown_path.
 
     METHODS:
       setup,
@@ -31,120 +31,120 @@ ENDCLASS.
 CLASS ltcl_path_tests IMPLEMENTATION.
 
   METHOD setup.
-    CREATE OBJECT mo_cut.
+    CREATE OBJECT cut.
   ENDMETHOD.
 
   METHOD test_01.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( './fixtures///b/../b/c.js' )
+      act = cut->normalize( './fixtures///b/../b/c.js' )
       exp = 'fixtures/b/c.js' ).
   ENDMETHOD.
 
   METHOD test_02.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '/foo/../../../bar' )
+      act = cut->normalize( '/foo/../../../bar' )
       exp = '/bar' ).
   ENDMETHOD.
 
   METHOD test_03.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'a//b//../b' )
+      act = cut->normalize( 'a//b//../b' )
       exp = 'a/b' ).
   ENDMETHOD.
 
   METHOD test_04.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'a//b//./c' )
+      act = cut->normalize( 'a//b//./c' )
       exp = 'a/b/c' ).
   ENDMETHOD.
 
   METHOD test_05.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'a//b//.' )
+      act = cut->normalize( 'a//b//.' )
       exp = 'a/b' ).
   ENDMETHOD.
 
   METHOD test_06.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '/a/b/c/../../../x/y/z' )
+      act = cut->normalize( '/a/b/c/../../../x/y/z' )
       exp = '/x/y/z' ).
   ENDMETHOD.
 
   METHOD test_07.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '///..//./foo/.//bar' )
+      act = cut->normalize( '///..//./foo/.//bar' )
       exp = '/foo/bar' ).
   ENDMETHOD.
 
   METHOD test_08.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'bar/foo../../' )
+      act = cut->normalize( 'bar/foo../../' )
       exp = 'bar/' ).
   ENDMETHOD.
 
   METHOD test_09.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'bar/foo../..' )
+      act = cut->normalize( 'bar/foo../..' )
       exp = 'bar' ).
   ENDMETHOD.
 
   METHOD test_10.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'bar/foo../../baz' )
+      act = cut->normalize( 'bar/foo../../baz' )
       exp = 'bar/baz' ).
   ENDMETHOD.
 
   METHOD test_11.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'bar/foo../' )
+      act = cut->normalize( 'bar/foo../' )
       exp = 'bar/foo../' ).
   ENDMETHOD.
 
   METHOD test_12.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( 'bar/foo..' )
+      act = cut->normalize( 'bar/foo..' )
       exp = 'bar/foo..' ).
   ENDMETHOD.
 
   METHOD test_13.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '../foo../../../bar' )
+      act = cut->normalize( '../foo../../../bar' )
       exp = '../../bar' ).
   ENDMETHOD.
 
   METHOD test_14.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '../../.././../../../bar' )
+      act = cut->normalize( '../../.././../../../bar' )
       exp = '../../../../../../bar' ).
   ENDMETHOD.
 
   METHOD test_15.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '../../../foo/../../../bar' )
+      act = cut->normalize( '../../../foo/../../../bar' )
       exp = '../../../../../bar' ).
   ENDMETHOD.
 
   METHOD test_16.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '../../../foo/../../../bar/../../' )
+      act = cut->normalize( '../../../foo/../../../bar/../../' )
       exp = '../../../../../../' ).
   ENDMETHOD.
 
   METHOD test_17.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '../foobar/barfoo/foo/../../../bar/../../' )
+      act = cut->normalize( '../foobar/barfoo/foo/../../../bar/../../' )
       exp = '../../' ).
   ENDMETHOD.
 
   METHOD test_18.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '../../../foobar/../../../bar/../../baz' )
+      act = cut->normalize( '../../../foobar/../../../bar/../../baz' )
       exp = '../../../../../../baz' ).
   ENDMETHOD.
 
   METHOD test_19.
     cl_abap_unit_assert=>assert_equals(
-      act = mo_cut->normalize( '/../../../foobar/../../../bar/../../baz' )
+      act = cut->normalize( '/../../../foobar/../../../bar/../../baz' )
       exp = '/baz' ).
   ENDMETHOD.
 

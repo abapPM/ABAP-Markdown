@@ -57,7 +57,7 @@ CLASS zcl_markdown_syn IMPLEMENTATION.
 
     DATA:
       line  TYPE string,
-      lines TYPE TABLE OF string.
+      lines TYPE string_table.
 
     highlighter = create( language ).
 

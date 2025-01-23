@@ -1,8 +1,10 @@
 *!
 CLASS lcl_string IMPLEMENTATION.
+
   METHOD get_data.
     result = data.
   ENDMETHOD.
+
   METHOD set_data.
     me->data = data.
   ENDMETHOD.
@@ -10,17 +12,20 @@ CLASS lcl_string IMPLEMENTATION.
   METHOD lif_value_type~copy.
     " Copies the value of the source object to itself
     DATA string TYPE REF TO lcl_string.
+
     string ?= source.
-    me->data = string->data.
+    data = string->data.
   ENDMETHOD.
 ENDCLASS.
 
 
 *!
 CLASS lcl_string_array IMPLEMENTATION.
+
   METHOD get_data.
     result = data.
   ENDMETHOD.
+
   METHOD set_data.
     me->data = data.
   ENDMETHOD.
@@ -33,6 +38,7 @@ CLASS lcl_string_array IMPLEMENTATION.
   METHOD append_array.
     " Append the items of an array to this array
     FIELD-SYMBOLS <item> TYPE string.
+
     LOOP AT array->data ASSIGNING <item>.
       append( <item> ).
     ENDLOOP.
@@ -40,30 +46,28 @@ CLASS lcl_string_array IMPLEMENTATION.
 
   METHOD delete.
     " Deletes a value from the array
-    DELETE me->data WHERE table_line = value.
+    DELETE data WHERE table_line = value.
   ENDMETHOD.
 
   METHOD find_val.
     " Returns the index of the first occurrence of a value in the array,
     "  or 0 if not found.
-    READ TABLE me->data WITH KEY table_line = value
-      TRANSPORTING NO FIELDS.
-    IF sy-subrc = 0.
-      index = sy-tabix.
-    ENDIF.
+    result = line_index( data[ table_line = value ] ).
   ENDMETHOD.
 
   METHOD lif_value_type~copy.
     " Copies the value of the source object to itself
     DATA sa TYPE REF TO lcl_string_array.
+
     sa ?= source.
-    me->data = sa->data.
+    data = sa->data.
   ENDMETHOD.
 ENDCLASS.
 
 
 *!
 CLASS lcl_hashmap IMPLEMENTATION.
+
   METHOD constructor.
     " Hashmap constructor
     " @parameter value_type The value part class name. This must be a valid
@@ -88,9 +92,11 @@ CLASS lcl_hashmap IMPLEMENTATION.
     " the type passed to the constructor (sorta like a template based hashmap).
     " @return The instance of the created item's value part, or empty if the item already exists.
     DATA new_item TYPE ty_item.
+
     FIELD-SYMBOLS <item> TYPE ty_item.
+
     new_item-key = key.
-    INSERT new_item INTO TABLE me->data ASSIGNING <item>.
+    INSERT new_item INTO TABLE data ASSIGNING <item>.
     CHECK sy-subrc = 0.
 
     IF me->value_type = 'LCL_HASHMAP' AND me->subsequent_hashmap_value_type IS NOT INITIAL.
@@ -100,16 +106,14 @@ CLASS lcl_hashmap IMPLEMENTATION.
     ELSE.
       CREATE OBJECT <item>-value TYPE (me->value_type).
     ENDIF.
-    value = <item>-value.
+    result = <item>-value.
   ENDMETHOD.
 
   METHOD exists.
     " Checks if a item exists in the hashmap.
     " @return A flag indicating if the item exists.
-    READ TABLE me->data WITH KEY key = key
-      TRANSPORTING NO FIELDS.
-    IF sy-subrc = 0.
-      exists = 'X'.
+    IF line_exists( data[ key = key ] ).
+      result = abap_true.
     ENDIF.
   ENDMETHOD.
 
@@ -118,12 +122,12 @@ CLASS lcl_hashmap IMPLEMENTATION.
     " If the item is not found, a new item is created, as if using the method new.
     " @return The reference to the value part of the item.
     FIELD-SYMBOLS <item> TYPE ty_item.
-    READ TABLE me->data ASSIGNING <item>
-      WITH KEY key = key.
+
+    READ TABLE data ASSIGNING <item> WITH KEY key = key.
     IF sy-subrc = 0.
-      value = <item>-value.
+      result = <item>-value.
     ELSE.
-      value = new( key ).
+      result = new( key ).
     ENDIF.
   ENDMETHOD.
 
@@ -132,18 +136,20 @@ CLASS lcl_hashmap IMPLEMENTATION.
     " If the item does not yet exist, an item is created with the passed key/value pair.
     " If the item already exists, its value is replaced with the passed value.
     DATA item TYPE REF TO lif_value_type.
+
     item = get( key ).
     item->copy( value ).
   ENDMETHOD.
 
   METHOD delete.
     " Deletes an item from the hashmap.
-    DELETE me->data WHERE key = key.
+    DELETE data WHERE key = key.
   ENDMETHOD.
 
   METHOD get_data.
     result = data.
   ENDMETHOD.
+
   METHOD set_data.
     me->data = data.
   ENDMETHOD.
@@ -153,7 +159,9 @@ CLASS lcl_hashmap IMPLEMENTATION.
     " @parameter hashmap The other (source) hashmap
     DATA: hashmap TYPE REF TO lcl_hashmap,
           value   TYPE REF TO lif_value_type.
+
     FIELD-SYMBOLS <item> TYPE ty_item.
+
     hashmap ?= source.
     LOOP AT hashmap->data ASSIGNING <item>.
       value = new( <item>-key ).

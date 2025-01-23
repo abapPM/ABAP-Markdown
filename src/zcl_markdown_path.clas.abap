@@ -80,12 +80,12 @@ CLASS zcl_markdown_path IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    is_absolute        = boolc( substring( val = result len = 1 ) = c_slash ).
-    trailing_separator = boolc( substring( val = reverse( result ) len = 1 ) = c_slash ).
+    is_absolute        = xsdbool( substring( val = result len = 1 ) = c_slash ).
+    trailing_separator = xsdbool( substring( val = reverse( result ) len = 1 ) = c_slash ).
 
     result = posix_normalize(
       path             = result
-      allow_above_root = boolc( is_absolute = abap_false ) ).
+      allow_above_root = xsdbool( is_absolute = abap_false ) ).
 
     IF result IS INITIAL AND is_absolute = abap_false.
       result = '.'.
@@ -112,7 +112,7 @@ CLASS zcl_markdown_path IMPLEMENTATION.
     DATA i TYPE i.
 
     DO strlen( path ) + 1 TIMES.
-      IF i < strlen( path ).
+      IF strlen( path ) > i.
         code = char_at( val = path off = i ).
       ELSEIF code = c_slash.
         EXIT.
@@ -123,16 +123,16 @@ CLASS zcl_markdown_path IMPLEMENTATION.
       out = |{ i } { result }|.
       INSERT out INTO TABLE out_tab.
       IF code = c_slash.
-        IF last_slash = i - 1 OR dots = 1.
+        IF i - 1 = last_slash OR dots = 1.
           ASSERT 0 = 0. " NOP
-        ELSEIF last_slash <> i - 1 AND dots = 2.
+        ELSEIF i - 1 <> last_slash AND dots = 2.
           IF strlen( result ) < 2 OR
             last_segment_length <> 2 OR
             char_at( val = result off = strlen( result ) - 1 ) <> c_dot OR
             char_at( val = result off = strlen( result ) - 2 ) <> c_dot.
             IF strlen( result ) > 2.
               last_slash_index = last_index_of( val = result sub = c_slash ).
-              IF last_slash_index <> strlen( result ) - 1.
+              IF strlen( result ) - 1 <> last_slash_index.
                 out = |{ i } { result } #1|.
                 INSERT out INTO TABLE out_tab.
                 IF last_slash_index = -1.
