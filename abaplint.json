@@ -127,7 +127,7 @@
     "line_only_punc": true,
     "local_class_naming": true,
     "local_testclass_consistency": true,
-    "local_variable_names": true,
+    "local_variable_names": false,
     "macro_naming": true,
     "main_file_contents": true,
     "many_parentheses": true,
@@ -137,7 +137,7 @@
     "method_implemented_twice": true,
     "method_length": true,
     "method_overwrites_builtin": true,
-    "method_parameter_names": true,
+    "method_parameter_names": false,
     "mix_returning": true,
     "modify_only_own_db_tables": true,
     "msag_consistency": true,
@@ -148,7 +148,15 @@
     "no_chained_assignment": true,
     "no_external_form_calls": true,
     "no_inline_in_optional_branches": false,
-    "no_prefixes": false,
+	  "no_prefixes": {
+  		"data": "^[LGM].?_",
+	  	"statics": "^S.?_",
+		  "fieldSymbols": "^<[LGM].?_",
+  		"constants": "^[LGM]C_",
+	  	"types": "^.*_TY_",
+		  "methodParameters": "^[ICER].?_",
+		  "allowIsPrefixBoolean": true
+	  },
     "no_public_attributes": {
       "allowReadOnly": true,
       "ignoreTestClasses": false
