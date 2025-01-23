@@ -100,9 +100,7 @@ CLASS lcl_hashmap IMPLEMENTATION.
     CHECK sy-subrc = 0.
 
     IF me->value_type = 'LCL_HASHMAP' AND me->subsequent_hashmap_value_type IS NOT INITIAL.
-      CREATE OBJECT <item>-value TYPE lcl_hashmap
-        EXPORTING
-          value_type = me->subsequent_hashmap_value_type.
+      <item>-value = NEW lcl_hashmap( value_type = me->subsequent_hashmap_value_type ).
     ELSE.
       CREATE OBJECT <item>-value TYPE (me->value_type).
     ENDIF.

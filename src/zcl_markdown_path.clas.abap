@@ -26,7 +26,7 @@ CLASS zcl_markdown_path DEFINITION
     METHODS posix_normalize
       IMPORTING
         path             TYPE string
-        allow_above_root TYPE string
+        allow_above_root TYPE abap_bool
       RETURNING
         VALUE(result)    TYPE string.
 
@@ -71,8 +71,10 @@ CLASS zcl_markdown_path IMPLEMENTATION.
 
   METHOD normalize.
 
-    DATA is_absolute TYPE abap_bool.
-    DATA trailing_separator TYPE abap_bool.
+    DATA:
+      is_absolute        TYPE abap_bool,
+      trailing_separator TYPE abap_bool,
+      allow_above_root   TYPE abap_bool.
 
     result = path.
     IF result IS INITIAL.
@@ -82,10 +84,11 @@ CLASS zcl_markdown_path IMPLEMENTATION.
 
     is_absolute        = xsdbool( substring( val = result len = 1 ) = c_slash ).
     trailing_separator = xsdbool( substring( val = reverse( result ) len = 1 ) = c_slash ).
+    allow_above_root   = xsdbool( is_absolute = abap_false ).
 
     result = posix_normalize(
       path             = result
-      allow_above_root = xsdbool( is_absolute = abap_false ) ).
+      allow_above_root = allow_above_root ).
 
     IF result IS INITIAL AND is_absolute = abap_false.
       result = '.'.
@@ -102,14 +105,15 @@ CLASS zcl_markdown_path IMPLEMENTATION.
 
   METHOD posix_normalize.
 
-    DATA out TYPE string.
-    DATA out_tab TYPE string_table.
-    DATA last_segment_length TYPE i.
-    DATA last_slash_index TYPE i.
-    DATA last_slash TYPE i VALUE -1.
-    DATA dots TYPE i.
-    DATA code TYPE c LENGTH 1.
-    DATA i TYPE i.
+    DATA:
+      out                 TYPE string,
+      out_tab             TYPE string_table,
+      last_segment_length TYPE i,
+      last_slash_index    TYPE i,
+      last_slash          TYPE i VALUE -1,
+      dots                TYPE i,
+      code                TYPE c LENGTH 1,
+      i                   TYPE i.
 
     DO strlen( path ) + 1 TIMES.
       IF strlen( path ) > i.
