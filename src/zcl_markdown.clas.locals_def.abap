@@ -85,7 +85,7 @@ CLASS lcl_hashmap DEFINITION FINAL.
     METHODS:
       constructor
         IMPORTING
-          VALUE(value_type) TYPE clike DEFAULT 'lcl_string',
+          value_type TYPE clike DEFAULT 'lcl_string',
       new
         IMPORTING
           key           TYPE clike

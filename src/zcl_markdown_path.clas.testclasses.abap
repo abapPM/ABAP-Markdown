@@ -31,7 +31,7 @@ ENDCLASS.
 CLASS ltcl_path_tests IMPLEMENTATION.
 
   METHOD setup.
-    CREATE OBJECT cut.
+    cut = NEW #( ).
   ENDMETHOD.
 
   METHOD test_01.

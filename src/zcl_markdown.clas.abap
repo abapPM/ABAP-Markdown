@@ -257,13 +257,12 @@ CLASS zcl_markdown DEFINITION
 
     CLASS-METHODS match_marked_string
       IMPORTING
-        VALUE(marker) TYPE string
-        !subject      TYPE string
+        !marker          TYPE string
+        !subject         TYPE string
       EXPORTING
-        VALUE(m0)     TYPE string
-        VALUE(m1)     TYPE string
-      EXCEPTIONS
-        not_found.
+        VALUE(m0)        TYPE string
+        VALUE(m1)        TYPE string
+        VALUE(not_found) TYPE abap_bool.
 
     CLASS-METHODS _escape
       IMPORTING
@@ -1737,11 +1736,12 @@ CLASS zcl_markdown IMPLEMENTATION.
 
   METHOD inline_code.
     DATA:
-      marker      TYPE c,
+      marker      TYPE c LENGTH 1,
       marker_comb TYPE string,
       m0          TYPE string,
       m1          TYPE string,
-      text        TYPE string.
+      text        TYPE string,
+      not_found   TYPE abap_bool.
 
     marker = excerpt-text(1).
 
@@ -1756,9 +1756,8 @@ CLASS zcl_markdown IMPLEMENTATION.
         IMPORTING
           m0        = m0
           m1        = m1
-        EXCEPTIONS
-          not_found = 4 ).
-      IF sy-subrc = 0.
+          not_found = not_found ).
+      IF not_found IS INITIAL.
         text = m1.
         CONDENSE text.
         text = text.
@@ -2453,8 +2452,9 @@ CLASS zcl_markdown IMPLEMENTATION.
         offset = strlen( m1 ) + ( strlen( marker ) * 2 ).
         m0 = m0(offset).
       ENDIF.
+      not_found = abap_false.
     ELSE.
-      RAISE not_found.
+      not_found = abap_true.
     ENDIF.
   ENDMETHOD.
 
@@ -2932,18 +2932,21 @@ CLASS zcl_markdown IMPLEMENTATION.
         CLEAR block.
         CONCATENATE 'block_' current_block-type '_continue' INTO method_name.
         TRANSLATE method_name TO UPPER CASE.
+
         CALL METHOD (method_name)
           EXPORTING
             line   = current_line
             block  = current_block
           RECEIVING
             result = block.
+
         IF block IS NOT INITIAL.
           current_block = block.
           CONTINUE.
         ELSE.
           CONCATENATE 'block_' current_block-type '_complete' INTO method_name.
           TRANSLATE method_name TO UPPER CASE.
+
           IF line_exists( methods[ table_line = method_name ] ).
             CALL METHOD (method_name)
               EXPORTING
@@ -2965,8 +2968,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       ref_block_types->lif_value_type~copy( unmarked_block_types ).
 
       DATA(block_types_data) = block_types->get_data( ).
-      READ TABLE block_types_data ASSIGNING <block_type>
-        WITH KEY key = marker.
+      READ TABLE block_types_data ASSIGNING <block_type> WITH KEY key = marker.
       IF sy-subrc = 0.
         ref_sa ?= <block_type>-value.
         ref_block_types->append_array( ref_sa ).
@@ -2978,6 +2980,7 @@ CLASS zcl_markdown IMPLEMENTATION.
         CLEAR block.
         CONCATENATE 'block_' <block_type_name> INTO method_name.
         TRANSLATE method_name TO UPPER CASE.
+
         CALL METHOD (method_name)
           EXPORTING
             line   = current_line
@@ -2995,6 +2998,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
           CONCATENATE 'block_' <block_type_name> '_continue' INTO method_name.
           TRANSLATE method_name TO UPPER CASE.
+
           IF line_exists( methods[ table_line = method_name ] ).
             block-continuable = abap_true.
           ENDIF.
@@ -3016,7 +3020,7 @@ CLASS zcl_markdown IMPLEMENTATION.
          current_block-type IS INITIAL AND
          current_block-interrupted IS INITIAL.
         CONCATENATE current_block-element-text-text %_newline text
-         INTO current_block-element-text-text.
+          INTO current_block-element-text-text.
       ELSE.
         APPEND current_block TO blocks.
 
@@ -3032,6 +3036,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     IF current_block-continuable IS NOT INITIAL.
       CONCATENATE 'block_' current_block-type '_complete' INTO method_name.
       TRANSLATE method_name TO UPPER CASE.
+
       IF line_exists( methods[ table_line = method_name ] ).
         CALL METHOD (method_name)
           EXPORTING
@@ -3058,5 +3063,6 @@ CLASS zcl_markdown IMPLEMENTATION.
     ENDLOOP.
 
     CONCATENATE result %_newline INTO result RESPECTING BLANKS.
+
   ENDMETHOD.                    "lines
 ENDCLASS.
