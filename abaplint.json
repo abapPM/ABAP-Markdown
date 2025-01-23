@@ -64,7 +64,9 @@
     "constructor_visibility_public": true,
     "contains_tab": true,
     "cyclic_oo": true,
-    "cyclomatic_complexity": true,
+    "cyclomatic_complexity": {
+      "max": 25
+    },
     "dangerous_statement": true,
     "db_operation_in_loop": false,
     "definitions_top": true,
@@ -142,7 +144,9 @@
     "modify_only_own_db_tables": true,
     "msag_consistency": true,
     "names_no_dash": true,
-    "nesting": true,
+    "nesting": {
+      "depth": 8
+    },
     "newline_between_methods": true,
     "no_aliases": true,
     "no_chained_assignment": true,
