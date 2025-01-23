@@ -18,9 +18,7 @@
 "!
 "! Unit test class for the string template class
 "!
-CLASS ltcl_string_tests DEFINITION FOR TESTING.
-  "#AU Risk_Level Harmless
-  "#AU Duration   Short
+CLASS ltcl_string_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PRIVATE SECTION.
     DATA o_string TYPE REF TO lcl_string.
     METHODS copying FOR TESTING.
@@ -44,9 +42,7 @@ ENDCLASS.                    "string_tests IMPLEMENTATION
 "!
 "! Unit test class for the string array template class
 "!
-CLASS ltcl_string_array_tests DEFINITION FOR TESTING.
-  "#AU Risk_Level Harmless
-  "#AU Duration   Short
+CLASS ltcl_string_array_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PRIVATE SECTION.
     DATA: o_sa TYPE REF TO lcl_string_array.
     METHODS:
@@ -141,9 +137,7 @@ ENDCLASS.                    "string_array_tests IMPLEMENTATION
 "!
 "! Unit test class for the hashmap template class
 "!
-CLASS ltcl_hashmap_tests DEFINITION FOR TESTING.
-  "#AU Risk_Level Harmless
-  "#AU Duration   Short
+CLASS ltcl_hashmap_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
   PRIVATE SECTION.
     DATA: o_hm TYPE REF TO lcl_hashmap.
     METHODS:
@@ -303,9 +297,7 @@ CLASS ltcl_hashmap_tests IMPLEMENTATION.
 ENDCLASS.                    "hashmap_tests IMPLEMENTATION
 
 
-CLASS ltcl_markdown_tests DEFINITION CREATE PRIVATE FOR TESTING.
-  "#AU Risk_Level Harmless
-  "#AU Duration   Short
+CLASS ltcl_markdown_tests DEFINITION CREATE PRIVATE FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
 
   PRIVATE SECTION.
     DATA cut TYPE REF TO zcl_markdown.

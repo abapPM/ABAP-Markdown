@@ -89,7 +89,7 @@ CLASS zcl_markdown DEFINITION
         handler    TYPE string,
         attributes TYPE ty_t_element_attribute,
         text       TYPE string,
-        lines      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        lines      TYPE string_table,
       END OF ty_element0,
       ty_t_element0 TYPE STANDARD TABLE OF ty_element0 WITH DEFAULT KEY.
 
@@ -100,7 +100,7 @@ CLASS zcl_markdown DEFINITION
         attributes TYPE ty_t_element_attribute,
         text       TYPE string,
         texts      TYPE ty_t_element0,
-        lines      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        lines      TYPE string_table,
       END OF ty_element1,
       ty_t_element1 TYPE STANDARD TABLE OF ty_element1 WITH DEFAULT KEY.
 
@@ -111,7 +111,7 @@ CLASS zcl_markdown DEFINITION
         attributes TYPE ty_t_element_attribute,
         text       TYPE string,
         texts      TYPE ty_t_element1,
-        lines      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        lines      TYPE string_table,
       END OF ty_element2,
       ty_t_element2 TYPE STANDARD TABLE OF ty_element2 WITH DEFAULT KEY.
 
@@ -122,7 +122,7 @@ CLASS zcl_markdown DEFINITION
         attributes TYPE ty_t_element_attribute,
         text       TYPE string,
         texts      TYPE ty_t_element2,
-        lines      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        lines      TYPE string_table,
       END OF ty_element3,
       ty_t_element3 TYPE STANDARD TABLE OF ty_element3 WITH DEFAULT KEY.
 
@@ -133,7 +133,7 @@ CLASS zcl_markdown DEFINITION
         attributes TYPE ty_t_element_attribute,
         text       TYPE string,
         texts      TYPE ty_t_element3,
-        lines      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        lines      TYPE string_table,
       END OF ty_element4,
       ty_t_element4 TYPE STANDARD TABLE OF ty_element4 WITH DEFAULT KEY.
 
@@ -144,7 +144,7 @@ CLASS zcl_markdown DEFINITION
         attributes TYPE ty_t_element_attribute,
         text       TYPE ty_element4,
         texts      TYPE ty_t_element4,
-        lines      TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        lines      TYPE string_table,
       END OF ty_element5.
 
     TYPES ty_element TYPE ty_element5.
@@ -170,7 +170,7 @@ CLASS zcl_markdown DEFINITION
         name        TYPE string,
         depth       TYPE i,
         void        TYPE abap_bool,
-        alignments  TYPE STANDARD TABLE OF string WITH DEFAULT KEY,
+        alignments  TYPE string_table,
       END OF ty_block.
 
     TYPES:
@@ -1121,10 +1121,10 @@ CLASS zcl_markdown IMPLEMENTATION.
   METHOD block_table.
     DATA:
       divider       TYPE string,
-      divider_cells TYPE TABLE OF string,
+      divider_cells TYPE string_table,
       len           TYPE i,
       header        TYPE string,
-      header_cells  TYPE TABLE OF string,
+      header_cells  TYPE string_table,
       index         TYPE i,
       headeresults  TYPE ty_t_element2.
 
@@ -1664,7 +1664,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
 
   METHOD elements.
-    DATA markup TYPE TABLE OF string.
+    DATA markup TYPE string_table.
 
     FIELD-SYMBOLS:
       <element> TYPE any,
@@ -1943,7 +1943,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
 
   METHOD inline_link.
-    CONSTANTS lc_regex_template TYPE string VALUE '\[((?:[^\]\[]|(?R))*)\]'.
+    CONSTANTS c_regex_template TYPE string VALUE '\[((?:[^\]\[]|(?R))*)\]'.
 
     DATA:
       len        TYPE i,
@@ -1965,9 +1965,9 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     remainder = excerpt-text.
 
-    regex = |({ lc_regex_template })|.
+    regex = |({ c_regex_template })|.
     DO 5 TIMES. "// regex recursion
-      REPLACE '(?R)' IN regex WITH lc_regex_template.
+      REPLACE '(?R)' IN regex WITH c_regex_template.
     ENDDO.
     REPLACE '(?R)' IN regex WITH '$'.
 
@@ -2419,8 +2419,8 @@ CLASS zcl_markdown IMPLEMENTATION.
     " Specific for regex matches with a delimiting marker
     "!
     CONSTANTS:
-      lc_regex       TYPE string VALUE '(^{&X}[ ]*(.+)[ ]*{&X}(?!{&1}))',
-      lc_regex_delim TYPE string VALUE '[^{&1}]{&X}(?!{&1})'.
+      c_regex       TYPE string VALUE '(^{&X}[ ]*(.+)[ ]*{&X}(?!{&1}))',
+      c_regex_delim TYPE string VALUE '[^{&1}]{&X}(?!{&1})'.
 
     DATA:
       marker_ptn    TYPE string,
@@ -2434,11 +2434,11 @@ CLASS zcl_markdown IMPLEMENTATION.
     submarker_ptn = marker(1).
     REPLACE ALL OCCURRENCES OF REGEX '([*?!+])' IN submarker_ptn WITH '[$1]'.
 
-    regex = lc_regex.
+    regex = c_regex.
     REPLACE ALL OCCURRENCES OF '{&1}' IN regex WITH submarker_ptn.
     REPLACE ALL OCCURRENCES OF '{&X}' IN regex WITH marker_ptn.
 
-    regex_delim = lc_regex_delim.
+    regex_delim = c_regex_delim.
     REPLACE ALL OCCURRENCES OF '{&1}' IN regex_delim WITH submarker_ptn.
     REPLACE ALL OCCURRENCES OF '{&X}' IN regex_delim WITH marker_ptn.
 
@@ -2465,7 +2465,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
 
   METHOD sanitise_element.
-    CONSTANTS lc_good_attribute TYPE string VALUE '^[a-zA-Z0-9][a-zA-Z0-9_-]*$'.
+    CONSTANTS c_good_attribute TYPE string VALUE '^[a-zA-Z0-9][a-zA-Z0-9_-]*$'.
 
     FIELD-SYMBOLS <attribute> LIKE LINE OF result-attributes.
 
@@ -2484,7 +2484,7 @@ CLASS zcl_markdown IMPLEMENTATION.
 
     LOOP AT result-attributes ASSIGNING <attribute>.
       " filter out badly parsed attribute
-      FIND REGEX lc_good_attribute IN <attribute>-name.
+      FIND REGEX c_good_attribute IN <attribute>-name.
       IF sy-subrc <> 0.
         DELETE TABLE result-attributes FROM <attribute>.
         CONTINUE.
@@ -2660,8 +2660,8 @@ CLASS zcl_markdown IMPLEMENTATION.
       language = <attribute>-value+9(*).
 
       result = zcl_markdown_syn=>process(
-        iv_source   = current_element-text-text
-        iv_language = language ).
+        source   = current_element-text-text
+        language = language ).
     ELSE.
       IF current_element-lines IS NOT INITIAL.
         CONCATENATE LINES OF current_element-lines INTO result SEPARATED BY %_newline.
@@ -2679,7 +2679,7 @@ CLASS zcl_markdown IMPLEMENTATION.
   METHOD text.
     " Parses the markdown text and returns the markup
     DATA:
-      lines      TYPE TABLE OF string,
+      lines      TYPE string_table,
       alert      TYPE lcl_alerts=>ty_alert,
       alert_html TYPE string.
 
@@ -2863,7 +2863,7 @@ CLASS zcl_markdown IMPLEMENTATION.
       current_block         TYPE ty_block,
       line                  TYPE string,
       chopped_line          TYPE string,
-      parts                 TYPE TABLE OF string,
+      parts                 TYPE string_table,
       shortage              TYPE i,
       spaces                TYPE string,
       indent                TYPE i,
