@@ -22,22 +22,21 @@ CLASS ltcl_string_tests DEFINITION FOR TESTING.
   "#AU Risk_Level Harmless
   "#AU Duration   Short
   PRIVATE SECTION.
-    DATA: o_string TYPE REF TO lcl_string.
-    METHODS:
-      copying FOR TESTING.
+    DATA o_string TYPE REF TO lcl_string.
+    METHODS copying FOR TESTING.
 ENDCLASS.                    "string_tests DEFINITION
 *!
 CLASS ltcl_string_tests IMPLEMENTATION.
   METHOD copying.
-    DATA lo_new TYPE REF TO lcl_string.
-    CREATE OBJECT o_string.
+    DATA o_new TYPE REF TO lcl_string.
+    o_string = NEW #( ).
     o_string->data = 'SpongeBob'.
 
-    CREATE OBJECT lo_new.
-    lo_new->copy( o_string ).
+    o_new = NEW #( ).
+    o_new->copy( o_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'SpongeBob'
-      act = lo_new->data ).
+      act = o_new->data ).
   ENDMETHOD.                    "copying
 ENDCLASS.                    "string_tests IMPLEMENTATION
 
@@ -60,55 +59,55 @@ ENDCLASS.                    "string_array_tests DEFINITION
 *!
 CLASS ltcl_string_array_tests IMPLEMENTATION.
   METHOD copying.
-    DATA lo_new TYPE REF TO lcl_string_array.
-    DATA lv_conc TYPE string.
+    DATA o_new TYPE REF TO lcl_string_array.
+    DATA conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    CREATE OBJECT lo_new.
-    lo_new->copy( o_sa ).
+    CREATE OBJECT o_new.
+    o_new->copy( o_sa ).
 
-    CONCATENATE LINES OF lo_new->data INTO lv_conc.
+    CONCATENATE LINES OF o_new->data INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
-      act = lv_conc ).
+      act = conc ).
   ENDMETHOD.                    "copying
 
   METHOD append.
-    DATA lv_conc TYPE string.
+    DATA conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
 
-    CONCATENATE LINES OF o_sa->data INTO lv_conc.
+    CONCATENATE LINES OF o_sa->data INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
-      act = lv_conc ).
+      act = conc ).
   ENDMETHOD.                    "append
 
   METHOD append_array.
-    DATA lo_new TYPE REF TO lcl_string_array.
-    DATA lv_conc TYPE string.
+    DATA o_new TYPE REF TO lcl_string_array.
+    DATA conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
-    CREATE OBJECT lo_new.
-    lo_new->append_array( o_sa ).
+    CREATE OBJECT o_new.
+    o_new->append_array( o_sa ).
 
-    CONCATENATE LINES OF lo_new->data INTO lv_conc.
+    CONCATENATE LINES OF o_new->data INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneTwoThree'
-      act = lv_conc ).
+      act = conc ).
   ENDMETHOD.                    "append_array
 
   METHOD delete.
-    DATA lv_conc TYPE string.
+    DATA conc TYPE string.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
@@ -117,24 +116,24 @@ CLASS ltcl_string_array_tests IMPLEMENTATION.
     o_sa->delete( 'Two' ).
 
 
-    CONCATENATE LINES OF o_sa->data INTO lv_conc.
+    CONCATENATE LINES OF o_sa->data INTO conc.
     cl_aunit_assert=>assert_equals(
       exp = 'OneThree'
-      act = lv_conc ).
+      act = conc ).
   ENDMETHOD.                    "delete
 
   METHOD find_val.
-    DATA lv_index TYPE i.
+    DATA index TYPE i.
     CREATE OBJECT o_sa.
     o_sa->append( 'One' ).
     o_sa->append( 'Two' ).
     o_sa->append( 'Three' ).
 
 
-    lv_index = o_sa->find_val( 'Two' ).
+    index = o_sa->find_val( 'Two' ).
     cl_aunit_assert=>assert_equals(
       exp = 2
-      act = lv_index ).
+      act = index ).
   ENDMETHOD.                    "find
 ENDCLASS.                    "string_array_tests IMPLEMENTATION
 
@@ -162,144 +161,144 @@ ENDCLASS.                    "hashmap_tests DEFINITION
 *!
 CLASS ltcl_hashmap_tests IMPLEMENTATION.
   METHOD copying.
-    DATA lo_value TYPE REF TO lcl_string.
-    DATA lo_new TYPE REF TO lcl_hashmap.
+    DATA o_value TYPE REF TO lcl_string.
+    DATA o_new TYPE REF TO lcl_hashmap.
     CREATE OBJECT o_hm
       EXPORTING
         value_type = 'lcl_string'.
 
-    lo_value ?= o_hm->new( 'IdxOne' ).
-    lo_value->data = 'ValueOne'.
+    o_value ?= o_hm->new( 'IdxOne' ).
+    o_value->data = 'ValueOne'.
 
-    CREATE OBJECT lo_new
+    CREATE OBJECT o_new
       EXPORTING
         value_type = 'lcl_string'.
-    lo_new->copy( o_hm ).
-    lo_value ?= lo_new->get( 'IdxOne' ).
+    o_new->copy( o_hm ).
+    o_value ?= o_new->get( 'IdxOne' ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = lo_value->data ).
+      act = o_value->data ).
   ENDMETHOD.                    "copying
 
   METHOD create_string_hashmap.
-    DATA: lo_string TYPE REF TO lcl_string.
+    DATA: o_string TYPE REF TO lcl_string.
     CREATE OBJECT o_hm. "// default
-    lo_string ?= o_hm->new( 'IdxOne' ).
+    o_string ?= o_hm->new( 'IdxOne' ).
 
     CREATE OBJECT o_hm
       EXPORTING
         value_type = 'lcl_string'.
-    lo_string ?= o_hm->new( 'IdxOne' ).
+    o_string ?= o_hm->new( 'IdxOne' ).
   ENDMETHOD.                    "create_string_hashmap
 
   METHOD create_array_hashmap.
-    DATA: lo_array TYPE REF TO lcl_string_array.
+    DATA: o_array TYPE REF TO lcl_string_array.
     CREATE OBJECT o_hm
       EXPORTING
         value_type = 'lcl_string_array'.
-    lo_array ?= o_hm->new( 'IdxOne' ).
+    o_array ?= o_hm->new( 'IdxOne' ).
   ENDMETHOD.                    "create_array_hashmap
 
   METHOD create_hashmap_hashmap.
-    DATA: lo_hashmap TYPE REF TO lcl_hashmap.
+    DATA: o_hashmap TYPE REF TO lcl_hashmap.
     CREATE OBJECT o_hm
       EXPORTING
         value_type = 'lcl_hashmap'.
-    lo_hashmap ?= o_hm->new( 'IdxOne' ).
+    o_hashmap ?= o_hm->new( 'IdxOne' ).
   ENDMETHOD.                    "create_hashmap_hashmap
 
   METHOD create_4_dimension_hashmap.
-    DATA: lo_hashmap1 TYPE REF TO lcl_hashmap,
-          lo_hashmap2 TYPE REF TO lcl_hashmap,
-          lo_hashmap3 TYPE REF TO lcl_hashmap.
+    DATA: o_hashmap1 TYPE REF TO lcl_hashmap,
+          o_hashmap2 TYPE REF TO lcl_hashmap,
+          o_hashmap3 TYPE REF TO lcl_hashmap.
     CREATE OBJECT o_hm
       EXPORTING
         value_type = 'lcl_hashmap:lcl_hashmap:lcl_hashmap'.
-    lo_hashmap1 ?= o_hm->new( 'IdxOne' ).
-    lo_hashmap2 ?= lo_hashmap1->new( 'IdxTwo' ).
-    lo_hashmap3 ?= lo_hashmap2->new( 'IdxThree' ).
+    o_hashmap1 ?= o_hm->new( 'IdxOne' ).
+    o_hashmap2 ?= o_hashmap1->new( 'IdxTwo' ).
+    o_hashmap3 ?= o_hashmap2->new( 'IdxThree' ).
   ENDMETHOD.                    "create_4_dimension_hashmap
 
   METHOD new.
-    DATA: lo_string TYPE REF TO lcl_string.
+    DATA: o_string TYPE REF TO lcl_string.
     CREATE OBJECT o_hm.
-    lo_string ?= o_hm->new( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lo_string ).
-    lo_string->data = 'ValueOne'.
+    o_string ?= o_hm->new( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( o_string ).
+    o_string->data = 'ValueOne'.
 
-    lo_string ?= o_hm->new( 'IdxOne' ).
-    cl_aunit_assert=>assert_initial( lo_string ).
+    o_string ?= o_hm->new( 'IdxOne' ).
+    cl_aunit_assert=>assert_initial( o_string ).
   ENDMETHOD.                    "new
 
   METHOD get.
-    DATA: lo_string TYPE REF TO lcl_string.
+    DATA: o_string TYPE REF TO lcl_string.
     CREATE OBJECT o_hm.
-    lo_string ?= o_hm->get( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lo_string ).
-    lo_string->data = 'ValueOne'.
+    o_string ?= o_hm->get( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( o_string ).
+    o_string->data = 'ValueOne'.
 
-    lo_string ?= o_hm->get( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lo_string ).
+    o_string ?= o_hm->get( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( o_string ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = lo_string->data ).
+      act = o_string->data ).
   ENDMETHOD.                    "get
 
   METHOD set.
-    DATA: lo_str1 TYPE REF TO lcl_string,
-          lo_str2 TYPE REF TO lcl_string.
-    CREATE OBJECT lo_str1.
-    lo_str1->data = 'ValueOne'.
+    DATA: o_str1 TYPE REF TO lcl_string,
+          o_str2 TYPE REF TO lcl_string.
+    CREATE OBJECT o_str1.
+    o_str1->data = 'ValueOne'.
 
     CREATE OBJECT o_hm.
 
-    lo_str2 ?= o_hm->get( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lo_str2 ).
-    cl_aunit_assert=>assert_initial( lo_str2->data ).
+    o_str2 ?= o_hm->get( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( o_str2 ).
+    cl_aunit_assert=>assert_initial( o_str2->data ).
 
     o_hm->set(
       key = 'IdxOne'
-      value = lo_str1 ).
+      value = o_str1 ).
 
-    lo_str2 ?= o_hm->get( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lo_str2 ).
+    o_str2 ?= o_hm->get( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( o_str2 ).
     cl_aunit_assert=>assert_equals(
       exp = 'ValueOne'
-      act = lo_str2->data ).
+      act = o_str2->data ).
   ENDMETHOD.                    "set
 
   METHOD exists.
-    DATA lv_exists TYPE abap_bool.
+    DATA exists TYPE abap_bool.
     CREATE OBJECT o_hm.
 
 
     o_hm->new( 'IdxOne' ).
 
-    lv_exists = o_hm->exists( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lv_exists ).
+    exists = o_hm->exists( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( exists ).
 
-    lv_exists = o_hm->exists( 'IdxTwo' ).
-    cl_aunit_assert=>assert_initial( lv_exists ).
+    exists = o_hm->exists( 'IdxTwo' ).
+    cl_aunit_assert=>assert_initial( exists ).
   ENDMETHOD.                    "exists
 
   METHOD delete.
-    DATA lv_exists TYPE abap_bool.
+    DATA exists TYPE abap_bool.
     CREATE OBJECT o_hm.
     o_hm->new( 'IdxOne' ).
     o_hm->new( 'IdxTwo' ).
     o_hm->new( 'IdxThree' ).
 
 
-    lv_exists = o_hm->exists( 'IdxTwo' ).
-    cl_aunit_assert=>assert_not_initial( lv_exists ).
+    exists = o_hm->exists( 'IdxTwo' ).
+    cl_aunit_assert=>assert_not_initial( exists ).
 
     o_hm->delete( 'IdxTwo' ).
-    lv_exists = o_hm->exists( 'IdxOne' ).
-    cl_aunit_assert=>assert_not_initial( lv_exists ).
-    lv_exists = o_hm->exists( 'IdxTwo' ).
-    cl_aunit_assert=>assert_initial( lv_exists ).
-    lv_exists = o_hm->exists( 'IdxThree' ).
-    cl_aunit_assert=>assert_not_initial( lv_exists ).
+    exists = o_hm->exists( 'IdxOne' ).
+    cl_aunit_assert=>assert_not_initial( exists ).
+    exists = o_hm->exists( 'IdxTwo' ).
+    cl_aunit_assert=>assert_initial( exists ).
+    exists = o_hm->exists( 'IdxThree' ).
+    cl_aunit_assert=>assert_not_initial( exists ).
   ENDMETHOD.                    "delete
 ENDCLASS.                    "hashmap_tests IMPLEMENTATION
 
@@ -309,7 +308,7 @@ CLASS ltcl_markdown_tests DEFINITION CREATE PRIVATE FOR TESTING.
   "#AU Duration   Short
 
   PRIVATE SECTION.
-    DATA: markdown TYPE REF TO zcl_markdown.
+    DATA cut TYPE REF TO zcl_markdown.
     METHODS:
       constructor,
       aesthetic_table FOR TESTING,
@@ -373,37 +372,37 @@ ENDCLASS.                    "markdown_tests DEFINITION
 *#
 CLASS ltcl_markdown_tests IMPLEMENTATION.
   METHOD constructor.
-    CREATE OBJECT markdown.
+    cut = NEW #( ).
   ENDMETHOD.
 
   METHOD aesthetic_table.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '| header 1 | header 2 |' %_newline '| -------- | -------- |' %_newline
-'| cell 1.1 | cell 1.2 |' %_newline '| cell 2.1 | cell 2.2 |' INTO lv_markdown RESPECTING
+'| cell 1.1 | cell 1.2 |' %_newline '| cell 2.1 | cell 2.2 |' INTO markdown RESPECTING
 BLANKS.
     CONCATENATE '<table>' %_newline '<thead>' %_newline '<tr>' %_newline '<th>header 1</th>'
 %_newline '<th>header 2</th>' %_newline '</tr>' %_newline '</thead>' %_newline '<tbody>'
 %_newline '<tr>' %_newline '<td>cell 1.1</td>' %_newline '<td>cell 1.2</td>' %_newline
 '</tr>' %_newline '<tr>' %_newline '<td>cell 2.1</td>' %_newline '<td>cell 2.2</td>'
-%_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO lv_expected_markup
+%_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD aligned_table.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '| header 1 | header 2 | header 2 |' %_newline
 '| :------- | :------: | -------: |' %_newline '| cell 1.1 | cell 1.2 | cell 1.3 |'
-%_newline '| cell 2.1 | cell 2.2 | cell 2.3 |' INTO lv_markdown RESPECTING BLANKS.
+%_newline '| cell 2.1 | cell 2.2 | cell 2.3 |' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<table>' %_newline '<thead>' %_newline '<tr>' %_newline
 '<th style="text-align: left;">header 1</th>' %_newline
 '<th style="text-align: center;">header 2</th>' %_newline
@@ -415,199 +414,199 @@ RESPECTING BLANKS.
 %_newline '<td style="text-align: left;">cell 2.1</td>' %_newline
 '<td style="text-align: center;">cell 2.2</td>' %_newline
 '<td style="text-align: right;">cell 2.3</td>' %_newline '</tr>' %_newline '</tbody>'
-%_newline '</table>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+%_newline '</table>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD atx_heading.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '# h1' %_newline %_newline '## h2' %_newline %_newline '### h3' %_newline
 %_newline '#### h4' %_newline %_newline '##### h5' %_newline %_newline '###### h6'
 %_newline %_newline '####### not a heading' %_newline %_newline '# closed h1 #' %_newline
-%_newline '#' INTO lv_markdown RESPECTING BLANKS.
+%_newline '#' INTO markdown RESPECTING BLANKS.
 *    CONCATENATE '<h1>h1</h1>' %_newline '<h2>h2</h2>' %_newline '<h3>h3</h3>' %_newline
 *'<h4>h4</h4>' %_newline '<h5>h5</h5>' %_newline '<h6>h6</h6>' %_newline
 *'<p>####### not a heading</p>' %_newline '<h1>closed h1</h1>' %_newline '<p>#</p>' INTO
-*lv_expected_markup RESPECTING BLANKS
+*expected_markup RESPECTING BLANKS
     CONCATENATE '<h1 id="h1">h1</h1>' %_newline '<h2 id="h2">h2</h2>' %_newline '<h3 id="h3">h3</h3>' %_newline
 '<h4 id="h4">h4</h4>' %_newline '<h5 id="h5">h5</h5>' %_newline '<h6 id="h6">h6</h6>' %_newline
 '<p>####### not a heading</p>' %_newline '<h1 id="closed-h1">closed h1</h1>' %_newline '<p>#</p>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD automatic_link.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    lv_markdown = '<http://example.com>'.
-    lv_expected_markup = '<p><a href="http://example.com">http://example.com</a></p>'.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    markdown = '<http://example.com>'.
+    expected_markup = '<p><a href="http://example.com">http://example.com</a></p>'.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD block_level_html.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '<div>_content_</div>' %_newline %_newline 'paragraph' %_newline %_newline
 '<div>' %_newline '  <div class="inner">' %_newline '    _content_' %_newline '  </div>'
 %_newline '</div>' %_newline %_newline '<style type="text/css">' %_newline
 '  p {color: #789;}' %_newline '</style>' %_newline %_newline '<div>' %_newline
-'  <a href="/">home</a></div>' INTO lv_markdown RESPECTING BLANKS.
+'  <a href="/">home</a></div>' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<div>_content_</div>' %_newline '<p>paragraph</p>' %_newline '<div>'
 %_newline '  <div class="inner">' %_newline '    _content_' %_newline '  </div>' %_newline
 '</div>' %_newline '<style type="text/css">' %_newline '  p {color: #789;}' %_newline
 '</style>' %_newline '<div>' %_newline '  <a href="/">home</a></div>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD code_block.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '    <?php' %_newline %_newline '    $message = ''Hello World!'';' %_newline
 '    echo $message;' %_newline %_newline '---' %_newline %_newline '    > not a quote'
 %_newline '    - not a list item' %_newline '    [not a reference]: http://foo.com' INTO
-lv_markdown RESPECTING BLANKS.
+markdown RESPECTING BLANKS.
     CONCATENATE '<pre><code>&lt;?php' %_newline %_newline '$message = ''Hello World!'';'
 %_newline 'echo $message;</code></pre>' %_newline '<hr />' %_newline
 '<pre><code>&gt; not a quote' %_newline '- not a list item' %_newline
-'[not a reference]: http://foo.com</code></pre>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'[not a reference]: http://foo.com</code></pre>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD code_span.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'a `code span`' %_newline %_newline '`this is also a codespan` trailing text'
 %_newline %_newline '`and look at this one!`' %_newline %_newline
 'single backtick in a code span: `` ` ``' %_newline %_newline
 'backtick-delimited string in a code span: `` `foo` ``' %_newline %_newline '`sth `` sth`'
-INTO lv_markdown RESPECTING BLANKS.
+INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p>a <code>code span</code></p>' %_newline
 '<p><code>this is also a codespan</code> trailing text</p>' %_newline
 '<p><code>and look at this one!</code></p>' %_newline
 '<p>single backtick in a code span: <code>`</code></p>' %_newline
 '<p>backtick-delimited string in a code span: <code>`foo`</code></p>' %_newline
-'<p><code>sth `` sth</code></p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'<p><code>sth `` sth</code></p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD compound_blockquote.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '> header' %_newline '> ------' %_newline '>' %_newline '> paragraph'
 %_newline '>' %_newline '> - li' %_newline '>' %_newline '> ---' %_newline '>' %_newline
-'> paragraph' INTO lv_markdown RESPECTING BLANKS.
+'> paragraph' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<blockquote>' %_newline '<h2>header</h2>' %_newline '<p>paragraph</p>'
 %_newline '<ul>' %_newline '<li>li</li>' %_newline '</ul>' %_newline '<hr />' %_newline
-'<p>paragraph</p>' %_newline '</blockquote>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'<p>paragraph</p>' %_newline '</blockquote>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD compound_emphasis.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '_`code`_ __`code`__' %_newline %_newline '*`code`**`code`**`code`*' %_newline
-INTO lv_markdown RESPECTING BLANKS.
+INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><em><code>code</code></em> <strong><code>code</code></strong></p>'
 %_newline
 '<p><em><code>code</code><strong><code>code</code></strong><code>code</code></em></p>'
-INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD compound_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '- paragraph' %_newline %_newline '  paragraph' %_newline %_newline
-'- paragraph' %_newline %_newline '  > quote' INTO lv_markdown RESPECTING BLANKS.
+'- paragraph' %_newline %_newline '  > quote' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<ul>' %_newline '<li>' %_newline '<p>paragraph</p>' %_newline
 '<p>paragraph</p>' %_newline '</li>' %_newline '<li>' %_newline '<p>paragraph</p>'
 %_newline '<blockquote>' %_newline '<p>quote</p>' %_newline '</blockquote>' %_newline
-'</li>' %_newline '</ul>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'</li>' %_newline '</ul>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD deeply_nested_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '- li' %_newline '    - li' %_newline '        - li' %_newline '        - li'
-%_newline '    - li' %_newline '- li' INTO lv_markdown RESPECTING BLANKS.
+%_newline '    - li' %_newline '- li' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<ul>' %_newline '<li>li' %_newline '<ul>' %_newline '<li>li' %_newline '<ul>'
 %_newline '<li>li</li>' %_newline '<li>li</li>' %_newline '</ul></li>' %_newline
 '<li>li</li>' %_newline '</ul></li>' %_newline '<li>li</li>' %_newline '</ul>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD em_strong.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '___em strong___' %_newline %_newline '___em strong_ strong__' %_newline
 %_newline '__strong _em strong___' %_newline %_newline '__strong _em strong_ strong__'
 %_newline %_newline '***em strong***' %_newline %_newline '***em strong* strong**'
 %_newline %_newline '**strong *em strong***' %_newline %_newline
-'**strong *em strong* strong**' INTO lv_markdown RESPECTING BLANKS.
+'**strong *em strong* strong**' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><strong><em>em strong</em></strong></p>' %_newline
 '<p><strong><em>em strong</em> strong</strong></p>' %_newline
 '<p><strong>strong <em>em strong</em></strong></p>' %_newline
@@ -615,44 +614,44 @@ lv_expected_markup RESPECTING BLANKS.
 '<p><strong><em>em strong</em></strong></p>' %_newline
 '<p><strong><em>em strong</em> strong</strong></p>' %_newline
 '<p><strong>strong <em>em strong</em></strong></p>' %_newline
-'<p><strong>strong <em>em strong</em> strong</strong></p>' INTO lv_expected_markup
+'<p><strong>strong <em>em strong</em> strong</strong></p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD email.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'my email is <me@example.com>' %_newline %_newline
 'html tags shouldn''t start an email autolink <strong>first.last@example.com</strong>'
-INTO lv_markdown RESPECTING BLANKS.
+INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p>my email is <a href="mailto:me@example.com">me@example.com</a></p>'
 %_newline
 '<p>html tags shouldn''t start an email autolink <strong>first.last@example.com</strong></p>'
-INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD emphasis.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '_underscore_, *asterisk*, _one two_, *three four*, _a_, *b*' %_newline
 %_newline '**strong** and *em* and **strong** and *em*' %_newline %_newline '_line'
 %_newline 'line' %_newline 'line_' %_newline %_newline 'this_is_not_an_emphasis' %_newline
 %_newline 'an empty emphasis __ ** is not an emphasis' %_newline %_newline
-'*mixed **double and* single asterisk** spans' INTO lv_markdown RESPECTING BLANKS.
+'*mixed **double and* single asterisk** spans' INTO markdown RESPECTING BLANKS.
     CONCATENATE
 '<p><em>underscore</em>, <em>asterisk</em>, <em>one two</em>, <em>three four</em>, <em>a</e'
 'm>, <em>b</em></p>' %_newline
@@ -660,52 +659,52 @@ INTO lv_expected_markup RESPECTING BLANKS.
 %_newline '<p><em>line' %_newline 'line' %_newline 'line</em></p>' %_newline
 '<p>this_is_not_an_emphasis</p>' %_newline
 '<p>an empty emphasis __ ** is not an emphasis</p>' %_newline
-'<p>*mixed *<em>double and</em> single asterisk** spans</p>' INTO lv_expected_markup
+'<p>*mixed *<em>double and</em> single asterisk** spans</p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD escaping.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'escaped \*emphasis\*.' %_newline %_newline
 '`escaped \*emphasis\* in a code span`' %_newline %_newline
 '    escaped \*emphasis\* in a code block' %_newline %_newline
 '\\ \` \* \_ \{ \} \[ \] \( \) \> \# \+ \- \. \!' %_newline %_newline
-'_one\_two_ __one\_two__' %_newline %_newline '*one\*two* **one\*two**' INTO lv_markdown
+'_one\_two_ __one\_two__' %_newline %_newline '*one\*two* **one\*two**' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<p>escaped *emphasis*.</p>' %_newline
 '<p><code>escaped \*emphasis\* in a code span</code></p>' %_newline
 '<pre><code>escaped \*emphasis\* in a code block</code></pre>' %_newline
 '<p>\ ` * _ { } [ ] ( ) > # + - . !</p>' %_newline
 '<p><em>one_two</em> <strong>one_two</strong></p>' %_newline
-'<p><em>one*two</em> <strong>one*two</strong></p>' INTO lv_expected_markup RESPECTING
+'<p><em>one*two</em> <strong>one*two</strong></p>' INTO expected_markup RESPECTING
 BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD fenced_code_block.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '```' %_newline '<?php' %_newline %_newline
 '$message = ''fenced code block'';' %_newline 'echo $message;' %_newline '```' %_newline
 %_newline '~~~' %_newline 'tilde' %_newline '~~~' %_newline %_newline '```php' %_newline
 'echo ''language identifier'';' %_newline '```' %_newline %_newline '```c#' %_newline
 'echo ''language identifier with non words'';' %_newline '```' %_newline %_newline
 '```html+php' %_newline '<?php' %_newline 'echo "Hello World";' %_newline '?>' %_newline
-'<a href="http://auraphp.com" >Aura Project</a>' %_newline '```' INTO lv_markdown
+'<a href="http://auraphp.com" >Aura Project</a>' %_newline '```' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<pre><code>&lt;?php' %_newline %_newline '$message = ''fenced code block'';'
 %_newline 'echo $message;</code></pre>' %_newline '<pre><code>tilde</code></pre>'
@@ -715,126 +714,126 @@ RESPECTING BLANKS.
 %_newline '<pre><code class="language-html+php">&lt;?php' %_newline 'echo "Hello World";'
 %_newline '?&gt;' %_newline
 '&lt;a href="http://auraphp.com" &gt;Aura Project&lt;/a&gt;</code></pre>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD horizontal_rule.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '---' %_newline %_newline '- - -' %_newline %_newline '   - - -' %_newline
-%_newline '***' %_newline %_newline '___' INTO lv_markdown RESPECTING BLANKS.
+%_newline '***' %_newline %_newline '___' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<hr />' %_newline '<hr />' %_newline '<hr />' %_newline '<hr />' %_newline
-'<hr />' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'<hr />' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD html_comment.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '<!-- single line -->' %_newline %_newline 'paragraph' %_newline %_newline
-'<!-- ' %_newline '  multiline -->' %_newline %_newline 'paragraph' INTO lv_markdown
+'<!-- ' %_newline '  multiline -->' %_newline %_newline 'paragraph' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<!-- single line -->' %_newline '<p>paragraph</p>' %_newline '<!-- '
-%_newline '  multiline -->' %_newline '<p>paragraph</p>' INTO lv_expected_markup
+%_newline '  multiline -->' %_newline '<p>paragraph</p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD html_entity.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    lv_markdown = '&amp; &copy; &#123;'.
-    lv_expected_markup = '<p>&amp; &copy; &#123;</p>'.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    markdown = '&amp; &copy; &#123;'.
+    expected_markup = '<p>&amp; &copy; &#123;</p>'.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD image_reference.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '![Markdown Logo][image]' %_newline %_newline '[image]: /md.png' %_newline
-%_newline '![missing reference]' INTO lv_markdown RESPECTING BLANKS.
+%_newline '![missing reference]' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><img src="/md.png" alt="Markdown Logo" /></p>' %_newline
-'<p>![missing reference]</p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'<p>![missing reference]</p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD image_title.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '![alt](/md.png "title")' %_newline %_newline '![blank title](/md.png "")'
-INTO lv_markdown RESPECTING BLANKS.
+INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><img src="/md.png" alt="alt" title="title" /></p>' %_newline
-'<p><img src="/md.png" alt="blank title" title="" /></p>' INTO lv_expected_markup
+'<p><img src="/md.png" alt="blank title" title="" /></p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD implicit_reference.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'an [implicit] reference link' %_newline %_newline
 '[implicit]: http://example.com' %_newline %_newline
 'an [implicit][] reference link with an empty link definition' %_newline %_newline
 'an [implicit][] reference link followed by [another][]' %_newline %_newline
 '[another]: http://cnn.com' %_newline %_newline
 'an [explicit][example] reference link with a title' %_newline %_newline
-'[example]: http://example.com "Example"' INTO lv_markdown RESPECTING BLANKS.
+'[example]: http://example.com "Example"' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p>an <a href="http://example.com">implicit</a> reference link</p>' %_newline
 '<p>an <a href="http://example.com">implicit</a> reference link with an empty link definiti'
 'on</p>' %_newline
 '<p>an <a href="http://example.com">implicit</a> reference link followed by <a href="http:/'
 '/cnn.com">another</a></p>' %_newline
 '<p>an <a href="http://example.com" title="Example">explicit</a> reference link with a titl'
-'e</p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'e</p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD inline_link.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '[link](http://example.com)' %_newline %_newline
 '[link](/url-(parentheses)) with parentheses in URL ' %_newline %_newline
 '([link](/index.php)) in parentheses' %_newline %_newline '[`link`](http://example.com)'
@@ -905,7 +904,7 @@ RESPECTING BLANKS.
 'DDl8H4aPQydMtB8gQdAFLU3t5+DRjsWSAMYoPEcAFOTs5EoNw+NPl9UHE0YQYGglEA09HR0bEAxsZHA0PnFzAqgoBq'
 '9gIxKOrOAnEQSBxIYwCiQgBDFwEBYFB/BEaVJ7AQ2wGiQXxcWhhhJRZQ0UBURsSlAVyup4Y4TaKAFIeBouAJUIM0KZ'
 'qoqPYpEzBrpQANfEFFQ4k16gXIbgCggnKoJ5DJdwAAAABJRU5ErkJggg==) and text](http://example.com)'
-INTO lv_markdown RESPECTING BLANKS.
+INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><a href="http://example.com">link</a></p>' %_newline
 '<p><a href="/url-(parentheses)">link</a> with parentheses in URL </p>' %_newline
 '<p>(<a href="/index.php">link</a>) in parentheses</p>' %_newline
@@ -977,25 +976,25 @@ INTO lv_markdown RESPECTING BLANKS.
 'f3//d2CJFQpU/h2EQeyGhoYvyIbA2FDDl8H4aPQydMtB8gQdAFLU3t5+DRjsWSAMYoPEcAFOTs5EoNw+NPl9UHE0YQ'
 'YGglEA09HR0bEAxsZHA0PnFzAqgoBq9gIxKOrOAnEQSBxIYwCiQgBDFwEBYFB/BEaVJ7AQ2wGiQXxcWhhhJRZQ0UBU'
 'RsSlAVyup4Y4TaKAFIeBouAJUIM0KZqoqPYpEzBrpQANfEFFQ4k16gXIbgCggnKoJ5DJdwAAAABJRU5ErkJggg==" '
-'alt="MD Logo" /> and text</a></p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'alt="MD Logo" /> and text</a></p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD inline_link_title.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '[single quotes](http://example.com ''Title'')' %_newline %_newline
 '[double quotes](http://example.com "Title")' %_newline %_newline
 '[single quotes blank](http://example.com '''')' %_newline %_newline
 '[double quotes blank](http://example.com "")' %_newline %_newline
 '[space](http://example.com "2 Words")' %_newline %_newline
-'[parentheses](http://example.com/url-(parentheses) "Title")' INTO lv_markdown RESPECTING
+'[parentheses](http://example.com/url-(parentheses) "Title")' INTO markdown RESPECTING
 BLANKS.
     CONCATENATE '<p><a href="http://example.com" title="Title">single quotes</a></p>'
 %_newline '<p><a href="http://example.com" title="Title">double quotes</a></p>' %_newline
@@ -1003,276 +1002,276 @@ BLANKS.
 '<p><a href="http://example.com" title="">double quotes blank</a></p>' %_newline
 '<p><a href="http://example.com" title="2 Words">space</a></p>' %_newline
 '<p><a href="http://example.com/url-(parentheses)" title="Title">parentheses</a></p>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD inline_title.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE
 '[single quotes](http://example.com ''Example'') and [double quotes](http://example.com "Exam'
-'ple")' INTO lv_markdown RESPECTING BLANKS.
+'ple")' INTO markdown RESPECTING BLANKS.
     CONCATENATE
 '<p><a href="http://example.com" title="Example">single quotes</a> and <a href="http://exam'
-'ple.com" title="Example">double quotes</a></p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'ple.com" title="Example">double quotes</a></p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD lazy_blockquote.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '> quote' %_newline 'the rest of it' %_newline %_newline '> another paragraph'
-%_newline 'the rest of it' INTO lv_markdown RESPECTING BLANKS.
+%_newline 'the rest of it' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<blockquote>' %_newline '<p>quote' %_newline 'the rest of it</p>' %_newline
 '<p>another paragraph' %_newline 'the rest of it</p>' %_newline '</blockquote>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD lazy_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    CONCATENATE '- li' %_newline 'the rest of it' INTO lv_markdown RESPECTING BLANKS.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    CONCATENATE '- li' %_newline 'the rest of it' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<ul>' %_newline '<li>li' %_newline 'the rest of it</li>' %_newline '</ul>'
-INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD line_break.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    CONCATENATE 'line  ' %_newline 'line' INTO lv_markdown RESPECTING BLANKS.
-    CONCATENATE '<p>line<br />' %_newline 'line</p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    CONCATENATE 'line  ' %_newline 'line' INTO markdown RESPECTING BLANKS.
+    CONCATENATE '<p>line<br />' %_newline 'line</p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD multiline_list_paragraph.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    CONCATENATE '- li' %_newline %_newline '  line' %_newline '  line' INTO lv_markdown
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    CONCATENATE '- li' %_newline %_newline '  line' %_newline '  line' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<ul>' %_newline '<li>' %_newline '<p>li</p>' %_newline '<p>line' %_newline
-'line</p>' %_newline '</li>' %_newline '</ul>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'line</p>' %_newline '</li>' %_newline '</ul>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD multiline_lists.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '1. One' %_newline '   First body copy' %_newline %_newline '2. Two' %_newline
-'   Last body copy' INTO lv_markdown RESPECTING BLANKS.
+'   Last body copy' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<ol>' %_newline '<li>' %_newline '<p>One' %_newline 'First body copy</p>'
 %_newline '</li>' %_newline '<li>' %_newline '<p>Two' %_newline 'Last body copy</p>'
-%_newline '</li>' %_newline '</ol>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+%_newline '</li>' %_newline '</ol>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD nested_block_level_html.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '<div>' %_newline '_parent_' %_newline '<div>' %_newline '_child_' %_newline
 '</div>' %_newline '<pre>' %_newline '_adopted child_' %_newline '</pre>' %_newline
-'</div>' %_newline %_newline '_outside_' INTO lv_markdown RESPECTING BLANKS.
+'</div>' %_newline %_newline '_outside_' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<div>' %_newline '_parent_' %_newline '<div>' %_newline '_child_' %_newline
 '</div>' %_newline '<pre>' %_newline '_adopted child_' %_newline '</pre>' %_newline
-'</div>' %_newline '<p><em>outside</em></p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'</div>' %_newline '<p><em>outside</em></p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD ordered_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '1. one' %_newline '2. two' %_newline %_newline 'repeating numbers:' %_newline
 %_newline '1. one' %_newline '1. two' %_newline %_newline 'large numbers:' %_newline
-%_newline '123. one' INTO lv_markdown RESPECTING BLANKS.
+%_newline '123. one' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<ol>' %_newline '<li>one</li>' %_newline '<li>two</li>' %_newline '</ol>'
 %_newline '<p>repeating numbers:</p>' %_newline '<ol>' %_newline '<li>one</li>' %_newline
 '<li>two</li>' %_newline '</ol>' %_newline '<p>large numbers:</p>' %_newline
-'<ol start="123">' %_newline '<li>one</li>' %_newline '</ol>' INTO lv_expected_markup
+'<ol start="123">' %_newline '<li>one</li>' %_newline '</ol>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD paragraph_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'paragraph' %_newline '- li' %_newline '- li' %_newline %_newline 'paragraph'
-%_newline %_newline '   * li' %_newline '   ' %_newline '   * li' INTO lv_markdown
+%_newline %_newline '   * li' %_newline '   ' %_newline '   * li' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<p>paragraph</p>' %_newline '<ul>' %_newline '<li>li</li>' %_newline
 '<li>li</li>' %_newline '</ul>' %_newline '<p>paragraph</p>' %_newline '<ul>' %_newline
 '<li>' %_newline '<p>li</p>' %_newline '</li>' %_newline '<li>' %_newline '<p>li</p>'
-%_newline '</li>' %_newline '</ul>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+%_newline '</li>' %_newline '</ul>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD reference_title.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '[double quotes] and [single quotes] and [parentheses]' %_newline %_newline
 '[double quotes]: http://example.com "example title"' %_newline
 '[single quotes]: http://example.com ''example title''' %_newline
 '[parentheses]: http://example.com (example title)' %_newline
-'[invalid title]: http://example.com example title' INTO lv_markdown RESPECTING BLANKS.
+'[invalid title]: http://example.com example title' INTO markdown RESPECTING BLANKS.
     CONCATENATE
 '<p><a href="http://example.com" title="example title">double quotes</a> and <a href="http:'
 '//example.com" title="example title">single quotes</a> and <a href="http://example.com" ti'
 'tle="example title">parentheses</a></p>' %_newline
 '<p>[invalid title]: <a href="http://example.com">http://example.com</a> example title</p>'
-INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD self_closing_html.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '<hr>' %_newline 'paragraph' %_newline '<hr/>' %_newline 'paragraph' %_newline
 '<hr />' %_newline 'paragraph' %_newline '<hr class="foo" id="bar" />' %_newline
 'paragraph' %_newline '<hr class="foo" id="bar"/>' %_newline 'paragraph' %_newline
-'<hr class="foo" id="bar" >' %_newline 'paragraph' INTO lv_markdown RESPECTING BLANKS.
+'<hr class="foo" id="bar" >' %_newline 'paragraph' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<hr>' %_newline '<p>paragraph</p>' %_newline '<hr/>' %_newline
 '<p>paragraph</p>' %_newline '<hr />' %_newline '<p>paragraph</p>' %_newline
 '<hr class="foo" id="bar" />' %_newline '<p>paragraph</p>' %_newline
 '<hr class="foo" id="bar"/>' %_newline '<p>paragraph</p>' %_newline
-'<hr class="foo" id="bar" >' %_newline '<p>paragraph</p>' INTO lv_expected_markup
+'<hr class="foo" id="bar" >' %_newline '<p>paragraph</p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD separated_nested_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    CONCATENATE '- li' %_newline %_newline '    - li' %_newline '    - li' INTO lv_markdown
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    CONCATENATE '- li' %_newline %_newline '    - li' %_newline '    - li' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<ul>' %_newline '<li>' %_newline '<p>li</p>' %_newline '<ul>' %_newline
 '<li>li</li>' %_newline '<li>li</li>' %_newline '</ul>' %_newline '</li>' %_newline
-'</ul>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'</ul>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD setext_header.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'h1' %_newline '==' %_newline %_newline 'h2' %_newline '--' %_newline
 %_newline 'single character' %_newline '-' %_newline %_newline 'not a header' %_newline
-%_newline '------------' INTO lv_markdown RESPECTING BLANKS.
+%_newline '------------' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<h1>h1</h1>' %_newline '<h2>h2</h2>' %_newline '<h2>single character</h2>'
-%_newline '<p>not a header</p>' %_newline '<hr />' INTO lv_expected_markup RESPECTING
+%_newline '<p>not a header</p>' %_newline '<hr />' INTO expected_markup RESPECTING
 BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD simple_blockquote.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '> quote' %_newline %_newline 'indented:' %_newline '   > quote' %_newline
-%_newline 'no space after `>`:' %_newline '>quote' INTO lv_markdown RESPECTING BLANKS.
+%_newline 'no space after `>`:' %_newline '>quote' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<blockquote>' %_newline '<p>quote</p>' %_newline '</blockquote>' %_newline
 '<p>indented:</p>' %_newline '<blockquote>' %_newline '<p>quote</p>' %_newline
 '</blockquote>' %_newline '<p>no space after <code>&gt;</code>:</p>' %_newline
-'<blockquote>' %_newline '<p>quote</p>' %_newline '</blockquote>' INTO lv_expected_markup
+'<blockquote>' %_newline '<p>quote</p>' %_newline '</blockquote>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD simple_table.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'header 1 | header 2' %_newline '-------- | --------' %_newline
 'cell 1.1 | cell 1.2' %_newline 'cell 2.1 | cell 2.2' %_newline %_newline '---' %_newline
 %_newline 'header 1 | header 2' %_newline ':------- | --------' %_newline
-'cell 1.1 | cell 1.2' %_newline 'cell 2.1 | cell 2.2' INTO lv_markdown RESPECTING BLANKS.
+'cell 1.1 | cell 1.2' %_newline 'cell 2.1 | cell 2.2' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<table>' %_newline '<thead>' %_newline '<tr>' %_newline '<th>header 1</th>'
 %_newline '<th>header 2</th>' %_newline '</tr>' %_newline '</thead>' %_newline '<tbody>'
 %_newline '<tr>' %_newline '<td>cell 1.1</td>' %_newline '<td>cell 1.2</td>' %_newline
@@ -1284,197 +1283,197 @@ RESPECTING BLANKS.
 '<td style="text-align: left;">cell 1.1</td>' %_newline '<td>cell 1.2</td>' %_newline
 '</tr>' %_newline '<tr>' %_newline '<td style="text-align: left;">cell 2.1</td>' %_newline
 '<td>cell 2.2</td>' %_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD span_level_html.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'an <b>important</b> <a href=''''>link</a>' %_newline %_newline 'broken<br/>'
 %_newline 'line' %_newline %_newline '<b>inline tag</b> at the beginning' %_newline
-%_newline '<span>http://example.com</span>' INTO lv_markdown RESPECTING BLANKS.
+%_newline '<span>http://example.com</span>' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p>an <b>important</b> <a href=''''>link</a></p>' %_newline '<p>broken<br/>'
 %_newline 'line</p>' %_newline '<p><b>inline tag</b> at the beginning</p>' %_newline
 '<p><span><a href="http://example.com">http://example.com</a></span></p>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD sparse_dense_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
-    CONCATENATE '- li' %_newline %_newline '- li' %_newline '- li' INTO lv_markdown RESPECTING
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
+    CONCATENATE '- li' %_newline %_newline '- li' %_newline '- li' INTO markdown RESPECTING
 BLANKS.
     CONCATENATE '<ul>' %_newline '<li>' %_newline '<p>li</p>' %_newline '</li>' %_newline
 '<li>' %_newline '<p>li</p>' %_newline '</li>' %_newline '<li>' %_newline '<p>li</p>'
-%_newline '</li>' %_newline '</ul>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+%_newline '</li>' %_newline '</ul>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD sparse_html.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '<div>' %_newline 'line 1' %_newline %_newline 'line 2' %_newline 'line 3'
-%_newline %_newline 'line 4' %_newline '</div>' INTO lv_markdown RESPECTING BLANKS.
+%_newline %_newline 'line 4' %_newline '</div>' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<div>' %_newline 'line 1' %_newline %_newline 'line 2' %_newline 'line 3'
-%_newline %_newline 'line 4' %_newline '</div>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+%_newline %_newline 'line 4' %_newline '</div>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD sparse_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '- li' %_newline %_newline '- li' %_newline %_newline '---' %_newline
-%_newline '- li' %_newline %_newline '    - indented li' INTO lv_markdown RESPECTING
+%_newline '- li' %_newline %_newline '    - indented li' INTO markdown RESPECTING
 BLANKS.
     CONCATENATE '<ul>' %_newline '<li>' %_newline '<p>li</p>' %_newline '</li>' %_newline
 '<li>' %_newline '<p>li</p>' %_newline '</li>' %_newline '</ul>' %_newline '<hr />'
 %_newline '<ul>' %_newline '<li>' %_newline '<p>li</p>' %_newline '<ul>' %_newline
 '<li>indented li</li>' %_newline '</ul>' %_newline '</li>' %_newline '</ul>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD special_characters.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'AT&T has an ampersand in their name' %_newline %_newline 'this & that'
 %_newline %_newline '4 < 5 and 6 > 5' %_newline %_newline
 '<http://example.com/autolink?a=1&b=2>' %_newline %_newline
 '[inline link](/script?a=1&b=2)' %_newline %_newline '[reference link][1]' %_newline
-%_newline '[1]: http://example.com/?a=1&b=2' INTO lv_markdown RESPECTING BLANKS.
+%_newline '[1]: http://example.com/?a=1&b=2' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p>AT&amp;T has an ampersand in their name</p>' %_newline
 '<p>this &amp; that</p>' %_newline '<p>4 &lt; 5 and 6 &gt; 5</p>' %_newline
 '<p><a href="http://example.com/autolink?a=1&amp;b=2">http://example.com/autolink?a=1&amp;b'
 '=2</a></p>' %_newline '<p><a href="/script?a=1&amp;b=2">inline link</a></p>' %_newline
 '<p><a href="http://example.com/?a=1&amp;b=2">reference link</a></p>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD strikethrough.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '~~strikethrough~~' %_newline %_newline
 'here''s ~~one~~ followed by ~~another one~~' %_newline %_newline
-'~~ this ~~ is not one neither is ~this~' INTO lv_markdown RESPECTING BLANKS.
+'~~ this ~~ is not one neither is ~this~' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><del>strikethrough</del></p>' %_newline
 '<p>here''s <del>one</del> followed by <del>another one</del></p>' %_newline
-'<p>~~ this ~~ is not one neither is ~this~</p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'<p>~~ this ~~ is not one neither is ~this~</p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD strong_em.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '*em **strong em***' %_newline %_newline '***strong em** em*' %_newline
 %_newline '*em **strong em** em*' %_newline %_newline '_em __strong em___' %_newline
 %_newline '___strong em__ em_' %_newline %_newline '_em __strong em__ em_' INTO
-lv_markdown RESPECTING BLANKS.
+markdown RESPECTING BLANKS.
     CONCATENATE '<p><em>em <strong>strong em</strong></em></p>' %_newline
 '<p><em><strong>strong em</strong> em</em></p>' %_newline
 '<p><em>em <strong>strong em</strong> em</em></p>' %_newline
 '<p><em>em <strong>strong em</strong></em></p>' %_newline
 '<p><em><strong>strong em</strong> em</em></p>' %_newline
-'<p><em>em <strong>strong em</strong> em</em></p>' INTO lv_expected_markup RESPECTING
+'<p><em>em <strong>strong em</strong> em</em></p>' INTO expected_markup RESPECTING
 BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD tab_indented_code_block.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '' %_horizontal_tab '<?php' %_newline '' %_horizontal_tab '' %_newline
 '' %_horizontal_tab '$message = ''Hello World!'';' %_newline
 '' %_horizontal_tab 'echo $message;' %_newline %_newline
-'' %_horizontal_tab 'echo "following a blank line";' INTO lv_markdown RESPECTING BLANKS.
+'' %_horizontal_tab 'echo "following a blank line";' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<pre><code>&lt;?php' %_newline %_newline '$message = ''Hello World!'';'
 %_newline 'echo $message;' %_newline %_newline
-'echo "following a blank line";</code></pre>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'echo "following a blank line";</code></pre>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD table_inline_markdown.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '| _header_ 1   | header 2     |' %_newline '| ------------ | ------------ |'
 %_newline '| _cell_ 1.1   | ~~cell~~ 1.2 |' %_newline '| `\|` 2.1      | \| 2.2       |'
-%_newline '| `\|` 2.1     | [link](/)    |' INTO lv_markdown RESPECTING BLANKS.
+%_newline '| `\|` 2.1     | [link](/)    |' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<table>' %_newline '<thead>' %_newline '<tr>' %_newline
 '<th><em>header</em> 1</th>' %_newline '<th>header 2</th>' %_newline '</tr>' %_newline
 '</thead>' %_newline '<tbody>' %_newline '<tr>' %_newline '<td><em>cell</em> 1.1</td>'
 %_newline '<td><del>cell</del> 1.2</td>' %_newline '</tr>' %_newline '<tr>' %_newline
 '<td><code>|</code> 2.1</td>' %_newline '<td>| 2.2</td>' %_newline '</tr>' %_newline
 '<tr>' %_newline '<td><code>|</code> 2.1</td>' %_newline '<td><a href="/">link</a></td>'
-%_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO lv_expected_markup
+%_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD text_reference.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '[reference link][1]' %_newline %_newline '[1]: http://example.com' %_newline
 %_newline '[one][website] with a semantic name' %_newline %_newline
 '[website]: http://example.com' %_newline %_newline '[one][404] with no definition'
@@ -1482,7 +1481,7 @@ RESPECTING BLANKS.
 %_newline '[one][Label] with a mixed case label and an upper case definition' %_newline
 %_newline '[LABEL]: http://example.com' %_newline %_newline '[one]' %_newline
 '[1] with the a label on the next line' %_newline %_newline '[`link`][website]' INTO
-lv_markdown RESPECTING BLANKS.
+markdown RESPECTING BLANKS.
     CONCATENATE '<p><a href="http://example.com">reference link</a></p>' %_newline
 '<p><a href="http://example.com">one</a> with a semantic name</p>' %_newline
 '<p>[one][404] with no definition</p>' %_newline
@@ -1491,63 +1490,63 @@ lv_markdown RESPECTING BLANKS.
 '<p><a href="http://example.com">one</a> with a mixed case label and an upper case definiti'
 'on</p>' %_newline
 '<p><a href="http://example.com">one</a> with the a label on the next line</p>' %_newline
-'<p><a href="http://example.com"><code>link</code></a></p>' INTO lv_expected_markup
+'<p><a href="http://example.com"><code>link</code></a></p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD unordered_list.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '- li' %_newline '- li' %_newline %_newline 'mixed markers:' %_newline
-%_newline '* li' %_newline '+ li' %_newline '- li' INTO lv_markdown RESPECTING BLANKS.
+%_newline '* li' %_newline '+ li' %_newline '- li' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<ul>' %_newline '<li>li</li>' %_newline '<li>li</li>' %_newline '</ul>'
 %_newline '<p>mixed markers:</p>' %_newline '<ul>' %_newline '<li>li</li>' %_newline
-'<li>li</li>' %_newline '<li>li</li>' %_newline '</ul>' INTO lv_expected_markup RESPECTING
+'<li>li</li>' %_newline '<li>li</li>' %_newline '</ul>' INTO expected_markup RESPECTING
 BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD untidy_table.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '| header 1 | header 2          |' %_newline '| ------------- | ----------- |'
 %_newline '| cell 1.1   | cell 1.2 |' %_newline '|    cell 2.1 | cell 2.2     |' INTO
-lv_markdown RESPECTING BLANKS.
+markdown RESPECTING BLANKS.
     CONCATENATE '<table>' %_newline '<thead>' %_newline '<tr>' %_newline '<th>header 1</th>'
 %_newline '<th>header 2</th>' %_newline '</tr>' %_newline '</thead>' %_newline '<tbody>'
 %_newline '<tr>' %_newline '<td>cell 1.1</td>' %_newline '<td>cell 1.2</td>' %_newline
 '</tr>' %_newline '<tr>' %_newline '<td>cell 2.1</td>' %_newline '<td>cell 2.2</td>'
-%_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO lv_expected_markup
+%_newline '</tr>' %_newline '</tbody>' %_newline '</table>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD url_autolinking.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE 'an autolink http://example.com' %_newline %_newline
 'inside of brackets [http://example.com], inside of braces {http://example.com},  inside of'
 ' parentheses (http://example.com)' %_newline %_newline
-'trailing slash http://example.com/ and http://example.com/path/' INTO lv_markdown
+'trailing slash http://example.com/ and http://example.com/path/' INTO markdown
 RESPECTING BLANKS.
     CONCATENATE '<p>an autolink <a href="http://example.com">http://example.com</a></p>'
 %_newline
@@ -1555,59 +1554,59 @@ RESPECTING BLANKS.
 'ces {<a href="http://example.com">http://example.com</a>},  inside of parentheses (<a href'
 '="http://example.com">http://example.com</a>)</p>' %_newline
 '<p>trailing slash <a href="http://example.com/">http://example.com/</a> and <a href="http:'
-'//example.com/path/">http://example.com/path/</a></p>' INTO lv_expected_markup RESPECTING
+'//example.com/path/">http://example.com/path/</a></p>' INTO expected_markup RESPECTING
 BLANKS.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD whitespace.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '    ' %_newline %_newline '    code' %_newline %_newline '    ' INTO
-lv_markdown RESPECTING BLANKS.
-    lv_expected_markup = '<pre><code>code</code></pre>'.
-    markdown->set_safe_mode( abap_false ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+markdown RESPECTING BLANKS.
+    expected_markup = '<pre><code>code</code></pre>'.
+    cut->set_safe_mode( abap_false ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD xss_attribute_encoding.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '[xss](https://www.example.com")' %_newline %_newline
 '![xss](https://www.example.com")' %_newline %_newline '[xss](https://www.example.com'')'
 %_newline %_newline '![xss](https://www.example.com'')' %_newline %_newline
 '![xss"](https://www.example.com)' %_newline %_newline '![xss''](https://www.example.com)'
-INTO lv_markdown RESPECTING BLANKS.
+INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p><a href="https://www.example.com&quot;">xss</a></p>' %_newline
 '<p><img src="https://www.example.com&quot;" alt="xss" /></p>' %_newline
 '<p><a href="https://www.example.com&#039;">xss</a></p>' %_newline
 '<p><img src="https://www.example.com&#039;" alt="xss" /></p>' %_newline
 '<p><img src="https://www.example.com" alt="xss&quot;" /></p>' %_newline
-'<p><img src="https://www.example.com" alt="xss&#039;" /></p>' INTO lv_expected_markup
+'<p><img src="https://www.example.com" alt="xss&#039;" /></p>' INTO expected_markup
 RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_true ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+    cut->set_safe_mode( abap_true ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD xss_bad_url.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '[xss](javascript:alert(1))' %_newline %_newline '[xss]( javascript:alert(1))'
 %_newline %_newline '[xss](javascript://alert(1))' %_newline %_newline
 '[xss](javascript&colon;alert(1))' %_newline %_newline '![xss](javascript:alert(1))'
@@ -1622,7 +1621,7 @@ RESPECTING BLANKS.
 %_newline '![xss]( data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==)' %_newline
 %_newline '![xss](data://text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==)' %_newline
 %_newline '![xss](data&colon;text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==)' INTO
-lv_markdown RESPECTING BLANKS.
+markdown RESPECTING BLANKS.
     CONCATENATE '<p><a href="javascript%3Aalert(1)">xss</a></p>' %_newline
 '<p><a href="javascript%3Aalert(1)">xss</a></p>' %_newline
 '<p><a href="javascript%3A//alert(1)">xss</a></p>' %_newline
@@ -1646,31 +1645,31 @@ lv_markdown RESPECTING BLANKS.
 '<p><img src="data%3A//text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==" alt="xss" /><'
 '/p>' %_newline
 '<p><img src="data&amp;colon;text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==" alt="xs'
-'s" /></p>' INTO lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_true ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+'s" /></p>' INTO expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_true ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 
   METHOD xss_text_encoding.
-    DATA: lv_markdown        TYPE string,
-          lv_expected_markup TYPE string,
-          lv_actual_markup   TYPE string.
+    DATA: markdown        TYPE string,
+          expected_markup TYPE string,
+          actual_markup   TYPE string.
     CONCATENATE '<script>alert(1)</script>' %_newline %_newline '<script>' %_newline %_newline
 'alert(1)' %_newline %_newline '</script>' %_newline %_newline %_newline '<script>'
-%_newline 'alert(1)' %_newline '</script>' INTO lv_markdown RESPECTING BLANKS.
+%_newline 'alert(1)' %_newline '</script>' INTO markdown RESPECTING BLANKS.
     CONCATENATE '<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>' %_newline
 '<p>&lt;script&gt;</p>' %_newline '<p>alert(1)</p>' %_newline '<p>&lt;/script&gt;</p>'
 %_newline '<p>&lt;script&gt;' %_newline 'alert(1)' %_newline '&lt;/script&gt;</p>' INTO
-lv_expected_markup RESPECTING BLANKS.
-    markdown->set_safe_mode( abap_true ).
-    lv_actual_markup = markdown->text( lv_markdown ).
+expected_markup RESPECTING BLANKS.
+    cut->set_safe_mode( abap_true ).
+    actual_markup = cut->text( markdown ).
     cl_aunit_assert=>assert_equals(
-      act = lv_actual_markup
-      exp = lv_expected_markup ).
+      act = actual_markup
+      exp = expected_markup ).
   ENDMETHOD.
 
 ENDCLASS.                    "markdown_tests IMPLEMENTATION

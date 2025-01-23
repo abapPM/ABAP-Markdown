@@ -2,9 +2,9 @@
 CLASS lcl_string IMPLEMENTATION.
   METHOD lif_value_type~copy.
     " Copies the value of the source object to itself
-    DATA lo_string TYPE REF TO lcl_string.
-    lo_string ?= source.
-    me->data = lo_string->data.
+    DATA string TYPE REF TO lcl_string.
+    string ?= source.
+    me->data = string->data.
   ENDMETHOD.
 ENDCLASS.
 
@@ -41,9 +41,9 @@ CLASS lcl_string_array IMPLEMENTATION.
 
   METHOD lif_value_type~copy.
     " Copies the value of the source object to itself
-    DATA lo_sa TYPE REF TO lcl_string_array.
-    lo_sa ?= source.
-    me->data = lo_sa->data.
+    DATA sa TYPE REF TO lcl_string_array.
+    sa ?= source.
+    me->data = sa->data.
   ENDMETHOD.
 ENDCLASS.
 
@@ -73,10 +73,10 @@ CLASS lcl_hashmap IMPLEMENTATION.
     " The value part in the new item will be created dynamically with
     " the type passed to the constructor (sorta like a template based hashmap).
     " @return The instance of the created item's value part, or empty if the item already exists.
-    DATA ls_new_item TYPE ty_item.
+    DATA new_item TYPE ty_item.
     FIELD-SYMBOLS <item> TYPE ty_item.
-    ls_new_item-key = key.
-    INSERT ls_new_item INTO TABLE me->data ASSIGNING <item>.
+    new_item-key = key.
+    INSERT new_item INTO TABLE me->data ASSIGNING <item>.
     CHECK sy-subrc = 0.
 
     IF me->value_type = 'LCL_HASHMAP' AND me->subsequent_hashmap_value_type IS NOT INITIAL.
@@ -117,9 +117,9 @@ CLASS lcl_hashmap IMPLEMENTATION.
     " Sets the value of an item in the hashmap.
     " If the item does not yet exist, an item is created with the passed key/value pair.
     " If the item already exists, its value is replaced with the passed value.
-    DATA lo_item TYPE REF TO lif_value_type.
-    lo_item = get( key ).
-    lo_item->copy( value ).
+    DATA item TYPE REF TO lif_value_type.
+    item = get( key ).
+    item->copy( value ).
   ENDMETHOD.
 
   METHOD delete.
@@ -130,13 +130,13 @@ CLASS lcl_hashmap IMPLEMENTATION.
   METHOD lif_value_type~copy.
     " Copies the contents of another hashmap to this hashmap
     " @parameter hashmap The other (source) hashmap
-    DATA: lo_hashmap TYPE REF TO lcl_hashmap,
-          lo_value   TYPE REF TO lif_value_type.
+    DATA: hashmap TYPE REF TO lcl_hashmap,
+          value   TYPE REF TO lif_value_type.
     FIELD-SYMBOLS <item> TYPE ty_item.
-    lo_hashmap ?= source.
-    LOOP AT lo_hashmap->data ASSIGNING <item>.
-      lo_value = new( <item>-key ).
-      lo_value->copy( <item>-value ).
+    hashmap ?= source.
+    LOOP AT hashmap->data ASSIGNING <item>.
+      value = new( <item>-key ).
+      value->copy( <item>-value ).
     ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
