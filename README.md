@@ -20,9 +20,9 @@ Compared to the original [ABAP Markdown](https://github.com/koemaeda/abap-markdo
 - Normalizing of link paths
 - Support for sapevent as protocol
 - Syntax highlighting (based on abapGit + diff + markdown)
-- Support for internal links (# Heading {#custom-id})
+- Support for internal links (`# Heading {#custom-id}`)
 - Support for strikethrough, subscript, superscript, highlight
-- Support for task list ([ ] or [x] task)
+- Support for task list (`[ ] or [x] task`)
 - Support for GitHub alerts
 
 NO WARRANTIES, [MIT License](https://github.com/abapPM/ABAP-Markdown/blob/main/LICENSE)
@@ -35,7 +35,13 @@ Render markdown as HTML:
 DATA(markdown_as_html) = NEW zcl_markdown( )->text( raw_markdown ).
 ```
 
-You can set options to render href and img src links with different root, use sapevent for launching links in external browser, or to set root path for internal links:
+Get the CSS required to render the HTML correctly:
+
+```abap
+DATA(styles) = zcl_markdown=>styles( ).
+```
+
+You can set options to render HREF and IMG src links with different root, to set root path for internal links, or use sapevent for launching links in external browser:
 
 ```abap
 DATA(markdown_service) = NEW zcl_markdown(
@@ -60,12 +66,6 @@ Method | Default | Description
 `set_markup_escaped` | `abap_false` | Escape HTML in trusted input (see [Parsedown](https://github.com/erusev/parsedown/blob/master/README.md#escaping-html))
 `set_breaks_enabled` | `abap_false` | Allow empty lines in markdown (rendered as `<br />`)
 `set_urls_linked`    | `abap_true`  | Change inline URLs to HREF links
-
-Get the styles required to render the HTML correctly:
-
-```abap
-DATA(styles) = zcl_markdown=>styles( ).
-```
 
 ## Example
 
