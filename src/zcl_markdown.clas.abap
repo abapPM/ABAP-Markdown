@@ -5,7 +5,7 @@ CLASS zcl_markdown DEFINITION
 ************************************************************************
 * Markdown Renderer
 *
-* https://github.com/koemaeda/abap-markdown
+* Original from https://github.com/koemaeda/abap-markdown
 *
 * Copyright (c) 2015 Guilherme Maeda
 * SPDX-License-Identifier: MIT
@@ -24,13 +24,14 @@ CLASS zcl_markdown DEFINITION
 * - Support for GitHub alerts
 * - Fix for escaped | in tables
 * - CSS
+* - Remove variable prefixes, strict abaplint rules
 ************************************************************************
 * TODO: Add "copy-to-clipboard" for code blocks
 ************************************************************************
 
   PUBLIC SECTION.
 
-    CONSTANTS c_version TYPE string VALUE '1.4.0' ##NEEDED.
+    CONSTANTS c_version TYPE string VALUE '1.4.1' ##NEEDED.
 
     CLASS-METHODS styles
       RETURNING
