@@ -47,19 +47,19 @@ DATA(markdown_service) = NEW zcl_markdown(
 
 Option | Description | Example
 -------|-------------|--------
-root_href | Absolute URL + path to prefix any HREF links        | `https://github.com/abapGit/abapGit/blob/main`
-root_img  | Absolute URL + path to prefix any IMG src links     | `https://github.com/abapGit/abapGit/raw/main`
-path      | Relative path to markdown file (if it's not in `/`) | `src/docs`
-sapevent  | Flag to change href links to `sapevent` protocol    | `abap_true`
+`root_href` | Absolute URL + path to prefix any HREF links        | `https://github.com/abapGit/abapGit/blob/main`
+`root_img`  | Absolute URL + path to prefix any IMG src links     | `https://github.com/abapGit/abapGit/raw/main`
+`path`      | Relative path to markdown file (if it's not in `/`) | `src/docs`
+`sapevent`  | Flag to change href links to `sapevent` protocol    | `abap_true`
 
 You can change render modes with the following methods:
 
 Method | Default | Description
 -------|---------|------------
-set_safe_mode      | abap_false | Process untrusted user-input (see [Parsedown](https://github.com/erusev/parsedown/blob/master/README.md#security))
-set_markup_escaped | abap_false | Escape HTML in trusted input (see [Parsedown](https://github.com/erusev/parsedown/blob/master/README.md#escaping-html))
-set_breaks_enabled | abap_false | Allow empty lines in markdown (rendered as `<br />`)
-set_urls_linked    | abap_true  | Change inline URLs to HREF links
+`set_safe_mode`      | `abap_false` | Process untrusted user-input (see [Parsedown](https://github.com/erusev/parsedown/blob/master/README.md#security))
+`set_markup_escaped` | `abap_false` | Escape HTML in trusted input (see [Parsedown](https://github.com/erusev/parsedown/blob/master/README.md#escaping-html))
+`set_breaks_enabled` | `abap_false` | Allow empty lines in markdown (rendered as `<br />`)
+`set_urls_linked`    | `abap_true`  | Change inline URLs to HREF links
 
 Get the styles required to render the HTML correctly:
 
