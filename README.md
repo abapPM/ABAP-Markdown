@@ -6,15 +6,63 @@
 
 # Markdown for ABAP
 
-...
+This is a full-featured markdown parser and renderer for ABAP. 
+
+- 100% ABAP
+- Fully tested with automated ABAP unit test cases
+- Parses GitHub flavored Markdown
+
+Compared to the original [ABAP Markdown](https://github.com/koemaeda/abap-markdown), the following has been added:
+
+- Option to render href and img src links with different root
+- Option to use sapevent for launching links in external browser
+- Option to set root path for internal links
+- Normalizing of link paths
+- Support for sapevent as protocol
+- Syntax highlighting (based on abapGit + diff + markdown)
+- Support for internal links (# Heading {#custom-id})
+- Support for strikethrough, subscript, superscript, highlight
+- Support for task list ([ ] or [x] task)
+- Support for GitHub alerts
 
 NO WARRANTIES, [MIT License](https://github.com/abapPM/ABAP-Markdown/blob/main/LICENSE)
 
 ## Usage
 
+Render markdown as HTML:
 
 ```abap
 DATA(markdown_as_html) = NEW zcl_markdown( )->text( raw_markdown ).
+```
+
+You can set options to render href and img src links with different root, use sapevent for launching links in external browser, or to set root path for internal links:
+
+```abap
+DATA(markdown_service) = NEW zcl_markdown(
+  root_href = root_href
+  root_img  = root_img
+  path      = path
+  sapevent  = abap_true ).
+```
+
+Option | Description | Example
+-------|-------------|--------
+root_href | Absolute URL + path to prefix any href links        | `https://github.com/abapGit/abapGit/blob/main`
+root_img  | Absolute URL + path to prefix any img src links     | `https://github.com/abapGit/abapGit/raw/main`
+path      | Relative path to markdown file (if it's not in `/`) | `src/docs`
+sapevent  | Flag to change href links to `sapevent` protocol    | `abap_true`
+
+## Example
+
+```abap
+DATA(html) = NEW zcl_markdown( )->text( 'Hello, _World_!' ).
+WRITE / html.
+```
+
+Output:
+
+```
+<p>Hello, <em>World</em>!</p>
 ```
 
 ## Prerequisites
