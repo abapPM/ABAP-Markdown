@@ -1,8 +1,0 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: markdown
-Upstream-Contact: apm.to Inc. <hello@apm.to>
-Source: https://github.com/abapPM/ABAP-Markdown
-
-Files: *
-Copyright: 2024 apm.to Inc. <https://apm.to>
-License: MIT
