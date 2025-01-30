@@ -6,7 +6,7 @@
 
 # Markdown for ABAP
 
-This is a full-featured markdown parser and renderer for ABAP. 
+This is a full-featured markdown parser and renderer for ABAP.
 
 - 100% ABAP
 - Fully tested with automated ABAP unit test cases
@@ -76,7 +76,7 @@ WRITE / html.
 
 Output:
 
-```
+```html
 <p>Hello, <em>World</em>!</p>
 ```
 
@@ -109,8 +109,8 @@ This project includes the code for the following open-source projects. Please su
 
 ## About
 
-Made with ❤️ in Canada
+Made with ❤ in Canada
 
 Copyright 2025 apm.to Inc. <https://apm.to>
 
-Follow [@marcf.be](https://bsky.app/profile/marcf.be) on Blueksy and [marcfbe](https://linkedin.com/in/marcfbe) or LinkedIn
+Follow [@marcf.be](https://bsky.app/profile/marcf.be) on Blueksy and [@marcfbe](https://linkedin.com/in/marcfbe) or LinkedIn

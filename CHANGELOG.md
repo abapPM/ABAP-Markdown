@@ -15,7 +15,7 @@ Initial Release
 - Original from https://github.com/koemaeda/abap-markdown
 
  Added by apm:
- 
+
 - Option to render href and img src links with different root
 - Option to use sapevent for launching links in external browser
 - Option to set root path for internal links
@@ -31,6 +31,5 @@ Initial Release
 - CSS
 - Remove variable prefixes, strict abaplint rules
 
-
-[unreleased changes]: https://github.com/abapPM/ABAP-.../compare/1.4.1...main
-[1.4.1]: https://github.com/abapPM/ABAP-.../releases/tag/1.4.1
+[unreleased changes]: https://github.com/abapPM/ABAP-Markdown/compare/1.4.1...main
+[1.4.1]: https://github.com/abapPM/ABAP-Markdown/releases/tag/1.4.1
