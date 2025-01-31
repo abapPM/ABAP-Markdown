@@ -1,32 +1,32 @@
 {
-  "name": "xxx",
+  "name": "markdown",
   "version": "1.0.0",
-  "description": "XXX",
+  "description": "Markdown for ABAP",
   "type": "module",
   "keywords": [
     "abap",
     "apm",
-    "module"
+    "module",
+    "markdown",
+    "markup"
   ],
   "homepage": "https://abappm.com",
   "bugs": {
-    "url": "https://github.com/abapPM/ABAP-XXX"
+    "url": "https://github.com/abapPM/ABAP-Markdown"
   },
   "license": "MIT",
   "author": {
     "name": "Marc Bernard",
-    "url": "https://abappm.com",
-    "email": "marc@abappm.com"
+    "url": "https://abappm.com"
   },
   "maintainers": [
     {
       "name": "Marc Bernard",
-      "url": "https://github.com/mbtools",
-      "email": "marc@abappm.com"
+      "url": "https://github.com/mbtools"
     }
   ],
   "repository": {
-    "url": "https://github.com/abapPM/ABAP-XXX"
+    "url": "https://github.com/abapPM/ABAP-Markdown"
   },
   "funding": {
     "type": "github",
