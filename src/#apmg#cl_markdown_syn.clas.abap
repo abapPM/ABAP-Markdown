@@ -1,4 +1,4 @@
-CLASS zcl_markdown_syn DEFINITION
+CLASS /apmg/cl_markdown_syn DEFINITION
   PUBLIC
   CREATE PUBLIC.
 
@@ -29,26 +29,26 @@ CLASS zcl_markdown_syn DEFINITION
 
     CLASS-DATA:
       current_language TYPE string,
-      highlighter      TYPE REF TO zcl_highlighter.
+      highlighter      TYPE REF TO /apmg/cl_highlighter.
 
     CLASS-METHODS create
       IMPORTING
         !language     TYPE string
       RETURNING
-        VALUE(result) TYPE REF TO zcl_highlighter.
+        VALUE(result) TYPE REF TO /apmg/cl_highlighter.
 
 ENDCLASS.
 
 
 
-CLASS zcl_markdown_syn IMPLEMENTATION.
+CLASS /apmg/cl_markdown_syn IMPLEMENTATION.
 
 
   METHOD create.
-    result = zcl_highlighter_factory=>create( |.{ language }| ).
+    result = /apmg/cl_highlighter_factory=>create( |.{ language }| ).
 
     IF result IS INITIAL.
-      result = zcl_highlighter_factory=>create( |.txt| ).
+      result = /apmg/cl_highlighter_factory=>create( |.txt| ).
     ENDIF.
   ENDMETHOD.
 

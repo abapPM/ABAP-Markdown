@@ -1,4 +1,4 @@
-CLASS zcl_markdown DEFINITION
+CLASS /apmg/cl_markdown DEFINITION
   PUBLIC
   CREATE PUBLIC.
 
@@ -28,52 +28,44 @@ CLASS zcl_markdown DEFINITION
 ************************************************************************
 * TODO: Add "copy-to-clipboard" for code blocks
 ************************************************************************
-
   PUBLIC SECTION.
 
-    CONSTANTS c_version TYPE string VALUE '1.4.1' ##NEEDED.
+    CONSTANTS c_version TYPE string VALUE '1.0.0' ##NEEDED.
 
     CLASS-METHODS styles
       RETURNING
         VALUE(result) TYPE string.
-
     METHODS text
       IMPORTING
         VALUE(text)   TYPE clike
       RETURNING
         VALUE(markup) TYPE string.
-
     METHODS set_breaks_enabled
       IMPORTING
         VALUE(breaks_enabled) TYPE clike
       RETURNING
-        VALUE(result)         TYPE REF TO zcl_markdown.
-
+        VALUE(result)         TYPE REF TO /apmg/cl_markdown.
     METHODS set_markup_escaped
       IMPORTING
         VALUE(markup_escaped) TYPE clike
       RETURNING
-        VALUE(result)         TYPE REF TO zcl_markdown.
-
+        VALUE(result)         TYPE REF TO /apmg/cl_markdown.
     METHODS set_urls_linked
       IMPORTING
         VALUE(urls_linked) TYPE clike
       RETURNING
-        VALUE(result)      TYPE REF TO zcl_markdown.
-
+        VALUE(result)      TYPE REF TO /apmg/cl_markdown.
     METHODS set_safe_mode
       IMPORTING
         !iv_safe_mode TYPE clike
       RETURNING
-        VALUE(result) TYPE REF TO zcl_markdown.
-
+        VALUE(result) TYPE REF TO /apmg/cl_markdown.
     METHODS constructor
       IMPORTING
         !root_href TYPE string OPTIONAL
         !root_img  TYPE string OPTIONAL
         !path      TYPE string OPTIONAL
         !sapevent  TYPE abap_bool DEFAULT abap_false.
-
   PROTECTED SECTION.
   PRIVATE SECTION.
 
@@ -202,7 +194,7 @@ CLASS zcl_markdown DEFINITION
         root_img  TYPE string,
         sapevent  TYPE abap_bool,
         path      TYPE string,
-        path_util TYPE REF TO zcl_markdown_path,
+        path_util TYPE REF TO /apmg/cl_markdown_path,
       END OF config.
     "<<< apm
 
@@ -596,7 +588,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_markdown IMPLEMENTATION.
+CLASS /apmg/cl_markdown IMPLEMENTATION.
 
 
   METHOD block_code.
@@ -2661,7 +2653,7 @@ CLASS zcl_markdown IMPLEMENTATION.
     IF sy-subrc = 0 AND <attribute>-value CP 'language-*'.
       language = <attribute>-value+9(*).
 
-      result = zcl_markdown_syn=>process(
+      result = /apmg/cl_markdown_syn=>process(
         source   = current_element-text-text
         language = language ).
     ELSE.

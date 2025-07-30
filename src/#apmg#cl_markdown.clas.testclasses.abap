@@ -308,7 +308,7 @@ ENDCLASS.                    "hashmap_tests IMPLEMENTATION
 CLASS ltcl_markdown_tests DEFINITION CREATE PRIVATE FOR TESTING RISK LEVEL HARMLESS DURATION SHORT.
 
   PRIVATE SECTION.
-    DATA cut TYPE REF TO zcl_markdown.
+    DATA cut TYPE REF TO /apmg/cl_markdown.
     METHODS:
       constructor,
       aesthetic_table FOR TESTING,

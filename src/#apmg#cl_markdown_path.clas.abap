@@ -1,4 +1,4 @@
-CLASS zcl_markdown_path DEFINITION
+CLASS /apmg/cl_markdown_path DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
@@ -13,7 +13,7 @@ CLASS zcl_markdown_path DEFINITION
 
     METHODS normalize
       IMPORTING
-        path          TYPE string
+        !path         TYPE string
       RETURNING
         VALUE(result) TYPE string.
 
@@ -56,7 +56,7 @@ ENDCLASS.
 
 
 
-CLASS zcl_markdown_path IMPLEMENTATION.
+CLASS /apmg/cl_markdown_path IMPLEMENTATION.
 
 
   METHOD char_at.

@@ -2,7 +2,7 @@ CLASS ltcl_path_tests DEFINITION FOR TESTING RISK LEVEL HARMLESS
   DURATION SHORT FINAL.
 
   PRIVATE SECTION.
-    DATA cut TYPE REF TO zcl_markdown_path.
+    DATA cut TYPE REF TO /apmg/cl_markdown_path.
 
     METHODS:
       setup,
