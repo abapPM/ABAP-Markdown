@@ -18,7 +18,7 @@ Compared to the original [ABAP Markdown](https://github.com/koemaeda/abap-markdo
 - Option to use sapevent for launching links in an external browser
 - Option to set root path for internal links
 - Normalizing of link paths
-- Support for sapevent as protocol
+- Support for sapevent as a protocol
 - Syntax highlighting (based on abapGit + diff + markdown)
 - Support for internal links (`# Heading {#custom-id}`)
 - Support for strikethrough, subscript, superscript, and highlight
