@@ -38,6 +38,7 @@
         "DEVC",
         "INTF",
         "NSPC"
+      ]
     },
     "ambiguous_statement": true,
     "avoid_use": true,
