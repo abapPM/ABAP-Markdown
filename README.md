@@ -1,4 +1,4 @@
-![Version](https://img.shields.io/endpoint?url=https://shield.abappm.com/github/abapPM/ABAP-Markdown/src/zcl_markdown.clas.abap/c_version&label=Version&color=blue)
+![Version](https://img.shields.io/endpoint?url=https://shield.abappm.com/github/abapPM/ABAP-Markdown/src/%2523apmg%2523cl_markdown.clas.abap/c_version&label=Version&color=blue)
 
 [![License](https://img.shields.io/github/license/abapPM/ABAP-Markdown?label=License&color=success)](https://github.com/abapPM/ABAP-Markdown/blob/main/LICENSE)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg?color=success)](https://github.com/abapPM/.github/blob/main/CODE_OF_CONDUCT.md)
@@ -14,16 +14,19 @@ This is a full-featured markdown parser and renderer for ABAP.
 
 Compared to the original [ABAP Markdown](https://github.com/koemaeda/abap-markdown), the following has been added:
 
-- Option to render href and img src links with different root
-- Option to use sapevent for launching links in external browser
+- Option to render href and img src links with a different root
+- Option to use sapevent for launching links in an external browser
 - Option to set root path for internal links
 - Normalizing of link paths
 - Support for sapevent as protocol
 - Syntax highlighting (based on abapGit + diff + markdown)
 - Support for internal links (`# Heading {#custom-id}`)
-- Support for strikethrough, subscript, superscript, highlight
+- Support for strikethrough, subscript, superscript, and highlight
 - Support for task list (`[ ] or [x] task`)
 - Support for GitHub alerts
+- Fix for escaped `|` in tables
+- Required CSS available as code
+- Removed variable prefixes (strict abaplint rules)
 
 NO WARRANTIES, [MIT License](https://github.com/abapPM/ABAP-Markdown/blob/main/LICENSE)
 
@@ -32,19 +35,19 @@ NO WARRANTIES, [MIT License](https://github.com/abapPM/ABAP-Markdown/blob/main/L
 Render markdown as HTML:
 
 ```abap
-DATA(markdown_as_html) = NEW zcl_markdown( )->text( raw_markdown ).
+DATA(markdown_as_html) = NEW /apmg/cl_markdown( )->text( raw_markdown ).
 ```
 
 Get the CSS required to render the HTML correctly:
 
 ```abap
-DATA(styles) = zcl_markdown=>styles( ).
+DATA(styles) = /apmg/cl_markdown=>styles( ).
 ```
 
-You can set options to render HREF and IMG src links with different root, to set root path for internal links, or use sapevent for launching links in external browser:
+You can set options to render HREF and IMG src links with a different root, to set a root path for internal links, or use sapevent for launching links in an external browser:
 
 ```abap
-DATA(markdown_service) = NEW zcl_markdown(
+DATA(markdown_service) = NEW /apmg/cl_markdown(
   root_href = root_href
   root_img  = root_img
   path      = path
@@ -70,7 +73,7 @@ Method | Default | Description
 ## Example
 
 ```abap
-DATA(html) = NEW zcl_markdown( )->text( 'Hello, _World_!' ).
+DATA(html) = NEW /apmg/cl_markdown( )->text( 'Hello, _World_!' ).
 WRITE / html.
 ```
 
@@ -98,11 +101,11 @@ All contributions are welcome! Read our [Contribution Guidelines](https://github
 
 You can install the developer version of ABAP MARKDOWN using [abapGit](https://github.com/abapGit/abapGit) either by creating a new online repository for `https://github.com/abapPM/ABAP-Markdown`.
 
-Recommended SAP package: `$MARKDOWN`
+Recommended SAP package: `/APMG/MARKDOWN`
 
 ## Attribution
 
-This project includes the code for the following open-source projects. Please support them if you can!
+This project includes the code from the following open-source projects. Please support them if you can!
 
 - [ABAP Markdown](https://github.com/koemaeda/abap-markdown), Guilherme Maeda, [MIT](https://github.com/koemaeda/abap-markdown/blob/master/LICENSE)
 - [Parsedown](https://github.com/erusev/parsedown), Emanuil Rusev, [MIT](https://github.com/erusev/parsedown/blob/master/LICENSE.txt)
@@ -113,4 +116,4 @@ Made with ❤ in Canada
 
 Copyright 2025 apm.to Inc. <https://apm.to>
 
-Follow [@marcf.be](https://bsky.app/profile/marcf.be) on Blueksy and [@marcfbe](https://linkedin.com/in/marcfbe) or LinkedIn
+Follow [@marcf.be](https://bsky.app/profile/marcf.be) on Bluesky and [@marcfbe](https://linkedin.com/in/marcfbe) or LinkedIn
