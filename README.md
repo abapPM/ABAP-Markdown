@@ -24,6 +24,9 @@ Compared to the original [ABAP Markdown](https://github.com/koemaeda/abap-markdo
 - Support for strikethrough, subscript, superscript, and highlight
 - Support for task list (`[ ] or [x] task`)
 - Support for GitHub alerts
+- Fix for escaped `|` in tables
+- Required CSS available as code
+- Removed variable prefixes (strict abaplint rules)
 
 NO WARRANTIES, [MIT License](https://github.com/abapPM/ABAP-Markdown/blob/main/LICENSE)
 
