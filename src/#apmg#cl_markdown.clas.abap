@@ -35,37 +35,44 @@ CLASS /apmg/cl_markdown DEFINITION
     CLASS-METHODS styles
       RETURNING
         VALUE(result) TYPE string.
+
     METHODS text
       IMPORTING
         VALUE(text)   TYPE clike
       RETURNING
         VALUE(markup) TYPE string.
+
     METHODS set_breaks_enabled
       IMPORTING
         VALUE(breaks_enabled) TYPE clike
       RETURNING
         VALUE(result)         TYPE REF TO /apmg/cl_markdown.
+
     METHODS set_markup_escaped
       IMPORTING
         VALUE(markup_escaped) TYPE clike
       RETURNING
         VALUE(result)         TYPE REF TO /apmg/cl_markdown.
+
     METHODS set_urls_linked
       IMPORTING
         VALUE(urls_linked) TYPE clike
       RETURNING
         VALUE(result)      TYPE REF TO /apmg/cl_markdown.
+
     METHODS set_safe_mode
       IMPORTING
         !iv_safe_mode TYPE clike
       RETURNING
         VALUE(result) TYPE REF TO /apmg/cl_markdown.
+
     METHODS constructor
       IMPORTING
         !root_href TYPE string OPTIONAL
         !root_img  TYPE string OPTIONAL
         !path      TYPE string OPTIONAL
         !sapevent  TYPE abap_bool DEFAULT abap_false.
+
   PROTECTED SECTION.
   PRIVATE SECTION.
 
