@@ -2580,6 +2580,9 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       && |\{ border-bottom: 1px solid #d8dee4; box-sizing: border-box; \}\n|
       && |.markdown img\n|
       && |\{ border: 0; box-sizing: border-box; max-width: 100%; vertical-align: middle; \}\n|
+      && |.markdown p,\n|
+      && |.markdown li\n|
+      && |\{ line-height: 1.5; \}\n|
       && |.markdown table\n|
       && |\{ border: 1px solid #ddd; border-radius: 3px; \}\n|
       && |.markdown th,\n|
