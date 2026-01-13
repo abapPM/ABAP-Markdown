@@ -648,7 +648,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
        line-text+1(1) = '!'.
       result-markup = line-body.
 
-      FIND REGEX '-->$' IN line-text.
+      FIND REGEX '-->$' IN line-text ##REGEX_POSIX.
       IF sy-subrc = 0.
         result-closed = abap_true.
       ENDIF.
@@ -662,7 +662,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     CONCATENATE result-markup %_newline line-body INTO result-markup.
 
-    FIND REGEX '-->\s*$' IN line-text.  " apm
+    FIND REGEX '-->\s*$' IN line-text ##REGEX_POSIX. " apm
     IF sy-subrc = 0.
       result-closed = abap_true.
     ENDIF.
@@ -677,7 +677,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     FIELD-SYMBOLS <attribute> LIKE LINE OF result-element-text-attributes.
 
     regex = '^[' && line-text(1) && ']{3,}[ ]*([^`]+)?[ ]*$'.
-    FIND REGEX regex IN line-text SUBMATCHES m1.
+    FIND REGEX regex IN line-text SUBMATCHES m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
       IF m1 IS NOT INITIAL.
         APPEND INITIAL LINE TO result-element-text-attributes ASSIGNING <attribute>.
@@ -712,7 +712,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     ENDIF.
 
     CONCATENATE '^' block-char '{3,}[ ]*$' INTO regex.
-    FIND REGEX regex IN line-text.
+    FIND REGEX regex IN line-text ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-element-text-text = result-element-text-text+1.
       result-complete = abap_true.
@@ -753,7 +753,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     ">>> apm
     FIND REGEX ' \{(#[\w-]*)\}' IN result-element-text-text IGNORING CASE
-      MATCH OFFSET pos SUBMATCHES id.
+      MATCH OFFSET pos SUBMATCHES id ##REGEX_POSIX.
     IF sy-subrc = 0.
       " # Heading {#custom-id}
       APPEND INITIAL LINE TO result-element-attributes ASSIGNING <attribute>.
@@ -803,7 +803,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     ENDIF.
 
     regex = '^(' && pattern && '[ ]+)(.*)'.
-    FIND REGEX regex IN line-text SUBMATCHES m1 m2.
+    FIND REGEX regex IN line-text SUBMATCHES m1 m2 ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-indent = line-indent.
 
@@ -869,7 +869,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     regex = '^' && block-pattern && '(?:[ ]+(.*)|$)'.
     IF block-indent = line-indent.
-      FIND REGEX regex IN line-text SUBMATCHES m1.
+      FIND REGEX regex IN line-text SUBMATCHES m1 ##REGEX_POSIX.
       IF sy-subrc = 0.
         IF result-interrupted IS NOT INITIAL.
           APPEND INITIAL LINE TO result-li-lines.
@@ -975,7 +975,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     result = block.
 
     CONCATENATE '^<' result-name '(?:[ ]*' regex_html_attribute ')*[ ]*>' INTO regex.
-    FIND REGEX regex IN line-text IGNORING CASE. "open
+    FIND REGEX regex IN line-text IGNORING CASE ##REGEX_POSIX. "open
     IF sy-subrc = 0.
       result-depth = result-depth + 1.
     ENDIF.
@@ -1007,7 +1007,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     FIELD-SYMBOLS <attribute> LIKE LINE OF result-element-attributes.
 
-    FIND REGEX '^>[ ]?(.*)' IN line-text SUBMATCHES m1.
+    FIND REGEX '^>[ ]?(.*)' IN line-text SUBMATCHES m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
       SHIFT m1 LEFT DELETING LEADING space.
       result-element-name = 'blockquote'.
@@ -1035,7 +1035,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     IF line-text(1) = '>'.
       result = block.
-      FIND REGEX '^>[ ]?(.*)' IN line-text SUBMATCHES m1.
+      FIND REGEX '^>[ ]?(.*)' IN line-text SUBMATCHES m1 ##REGEX_POSIX.
       IF sy-subrc = 0.
         " >>> apm
         IF lcl_alerts=>get( m1 ) IS NOT INITIAL.
@@ -1073,7 +1073,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       ref_val  TYPE REF TO lcl_string.
 
     FIND REGEX '^\[(.+)\]:[ ]*<?(\S+)>?([ ]+["''(](.+)["'')])?[ ]*$'
-      IN line-text SUBMATCHES m1 m2 m3 m4.
+      IN line-text SUBMATCHES m1 m2 m3 m4 ##REGEX_POSIX.
     IF sy-subrc = 0.
       id = m1.
       TRANSLATE id TO LOWER CASE.
@@ -1097,7 +1097,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     DATA regex TYPE string.
 
     CONCATENATE '^([' line-text(1) '])([ ]*\1){2,}[ ]*$' INTO regex.
-    FIND REGEX regex IN line-text.
+    FIND REGEX regex IN line-text ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-element-name = 'hr'.
     ENDIF.
@@ -1793,7 +1793,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     regex = '(^<((mailto:)?' && common_mark_email && ')>)'.
 
     FIND REGEX regex IN excerpt-text IGNORING CASE
-      SUBMATCHES m0 m1 m2.
+      SUBMATCHES m0 m1 m2 ##REGEX_POSIX.
     IF sy-subrc = 0.
       url = m1.
       IF m2 IS INITIAL.
@@ -1828,14 +1828,14 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     regex ?= strong_regex->get( marker ).
     IF strlen( excerpt-text ) > 1 AND excerpt-text+1(1) = marker AND
        regex->get_data( ) IS NOT INITIAL.
-      FIND REGEX regex->get_data( ) IN excerpt-text SUBMATCHES m0 m1.
+      FIND REGEX regex->get_data( ) IN excerpt-text SUBMATCHES m0 m1 ##REGEX_POSIX.
       IF sy-subrc = 0.
         emphasis = 'strong'.
 
         "// get the (ungreedy) end marker
         regex_delim = '[^&][&]{2}(?![&])'.
         REPLACE ALL OCCURRENCES OF '&' IN regex_delim WITH marker.
-        FIND REGEX regex_delim IN m1 MATCH OFFSET offset.
+        FIND REGEX regex_delim IN m1 MATCH OFFSET offset ##REGEX_POSIX.
         IF sy-subrc = 0.
           offset = offset + 1.
           m1 = m1(offset).
@@ -1847,7 +1847,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     regex ?= em_regex->get( marker ).
     IF emphasis IS INITIAL AND regex->get_data( ) IS NOT INITIAL.
-      FIND REGEX regex->get_data( ) IN excerpt-text SUBMATCHES m0 m1.
+      FIND REGEX regex->get_data( ) IN excerpt-text SUBMATCHES m0 m1 ##REGEX_POSIX.
       IF sy-subrc = 0.
         ">>> apm
         CASE marker.
@@ -1900,7 +1900,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
           excerpt-text+1(1) = '='.
 
     FIND REGEX '(^==(?=\S)([^(?:==)]+)(?=\S)==)' IN excerpt-text
-      SUBMATCHES m0 m1.
+      SUBMATCHES m0 m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-extent = strlen( m0 ).
       result-element-name = 'mark'.
@@ -1973,7 +1973,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     ENDDO.
     REPLACE '(?R)' IN regex WITH '$'.
 
-    FIND REGEX regex IN remainder SUBMATCHES m0 m1.
+    FIND REGEX regex IN remainder SUBMATCHES m0 m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-element-text-text = m1.
       result-extent = strlen( m0 ).
@@ -1988,8 +1988,8 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 *^[(]((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|''[^'']*''))?[)]
 
     "FIND REGEX '(^[(]\s*((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|''[^\'']*''))?\s*[)])'
-    FIND REGEX '(^[(]\s*((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|''[^\'']*''|\([^\)]*\)))?\s*[)])' " apm
-      IN remainder SUBMATCHES m0 m1 m2.
+    FIND REGEX '(^[(]\s*((?:[^ ()]|[(][^ )]+[)])+)(?:[ ]+("[^"]*"|''[^\'']*''|\([^\)]*\)))?\s*[)])'
+      IN remainder SUBMATCHES m0 m1 m2 ##REGEX_POSIX. " apm
     IF sy-subrc = 0.
       APPEND INITIAL LINE TO result-element-attributes ASSIGNING <attribute>.
       <attribute>-name = 'href'.
@@ -2005,7 +2005,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       result-extent = result-extent + len.
 
     ELSE.
-      FIND REGEX '(^\s*\[([^\]]*)\])' IN remainder SUBMATCHES m0 m1.
+      FIND REGEX '(^\s*\[([^\]]*)\])' IN remainder SUBMATCHES m0 m1 ##REGEX_POSIX.
       IF sy-subrc = 0.
         IF m1 IS NOT INITIAL.
           definition = m1.
@@ -2054,12 +2054,12 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
           excerpt-text CS '>' AND
           strlen( excerpt-text ) > 1.
 
-    FIND REGEX '(^<\/\w*[ ]*>)' IN excerpt-text SUBMATCHES m0.
+    FIND REGEX '(^<\/\w*[ ]*>)' IN excerpt-text SUBMATCHES m0 ##REGEX_POSIX.
     IF sy-subrc <> 0.
-      FIND REGEX '(^<!---?[^>-](?:-?[^-])*-->)' IN excerpt-text SUBMATCHES m0.
+      FIND REGEX '(^<!---?[^>-](?:-?[^-])*-->)' IN excerpt-text SUBMATCHES m0 ##REGEX_POSIX.
       IF sy-subrc <> 0.
         regex = '(^<\w*(?:[ ]*' && regex_html_attribute && ')*[ ]*\/?>)'.
-        FIND REGEX regex IN excerpt-text SUBMATCHES m0 ##SUBRC_OK.
+        FIND REGEX regex IN excerpt-text SUBMATCHES m0 ##SUBRC_OK ##REGEX_POSIX.
       ENDIF.
     ENDIF.
 
@@ -2076,7 +2076,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     CHECK excerpt-text IS NOT INITIAL.
 
     IF excerpt-text(1) = '&'.
-      FIND REGEX '^&#?\w+;' IN excerpt-text.
+      FIND REGEX '^&#?\w+;' IN excerpt-text ##REGEX_POSIX.
       IF sy-subrc <> 0.
         result-markup = '&amp;'.
         result-extent = 1.
@@ -2108,7 +2108,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
           excerpt-text+1(1) = '~'.
 
     FIND REGEX '(^~~(?=\S)([^(?:~~)]+)(?=\S)~~)' IN excerpt-text
-      SUBMATCHES m0 m1.
+      SUBMATCHES m0 m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-extent = strlen( m0 ).
       result-element-name = 'del'.
@@ -2130,7 +2130,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
           excerpt-text+2(1) = '/'.
 
     FIND REGEX '(\bhttps?:[\/]{2}[^\s<]+\b\/*)' IN excerpt-context
-      IGNORING CASE SUBMATCHES m0 MATCH OFFSET offset.
+      IGNORING CASE SUBMATCHES m0 MATCH OFFSET offset ##REGEX_POSIX.
     IF sy-subrc = 0.
       result-extent = strlen( m0 ).
       result-position = offset + 1. "// set to +1 so 0 is not initial
@@ -2154,7 +2154,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     CHECK excerpt-text CS '>'.
 
-    FIND REGEX '(^<(\w+:\/{2}[^ >]+)>)' IN excerpt-text SUBMATCHES m0 m1.
+    FIND REGEX '(^<(\w+:\/{2}[^ >]+)>)' IN excerpt-text SUBMATCHES m0 m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
       url = m1.
       result-extent = strlen( m0 ).
@@ -2443,9 +2443,9 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     REPLACE ALL OCCURRENCES OF '{&1}' IN regex_delim WITH submarker_ptn.
     REPLACE ALL OCCURRENCES OF '{&X}' IN regex_delim WITH marker_ptn.
 
-    FIND REGEX regex IN subject SUBMATCHES m0 m1.
+    FIND REGEX regex IN subject SUBMATCHES m0 m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
-      FIND REGEX regex_delim IN m1 MATCH OFFSET offset.
+      FIND REGEX regex_delim IN m1 MATCH OFFSET offset ##REGEX_POSIX.
       IF sy-subrc = 0.
         offset = offset + 1.
         m1 = m1(offset).
@@ -2486,7 +2486,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     LOOP AT result-attributes ASSIGNING <attribute>.
       " filter out badly parsed attribute
-      FIND REGEX c_good_attribute IN <attribute>-name.
+      FIND REGEX c_good_attribute IN <attribute>-name ##REGEX_POSIX.
       IF sy-subrc <> 0.
         DELETE TABLE result-attributes FROM <attribute>.
         CONTINUE.
@@ -2914,7 +2914,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       ENDIF.
 
       CLEAR spaces.
-      FIND REGEX '^(\s+)' IN line SUBMATCHES spaces ##SUBRC_OK.
+      FIND REGEX '^(\s+)' IN line SUBMATCHES spaces ##SUBRC_OK ##REGEX_POSIX.
       indent = strlen( spaces ).
       IF indent > 0.
         text = line+indent.
