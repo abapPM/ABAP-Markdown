@@ -765,12 +765,12 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
         val   = to_lower( result-element-text-text )
         regex = `[^\w\s\-]`
         with  = ``
-        occ   = 0 ).
+        occ   = 0 ) ##REGEX_POSIX.
       id = replace(
         val   = id
         regex = `\s`
         with  = `-`
-        occ   = 0 ).
+        occ   = 0 ) ##REGEX_POSIX.
       " If there are HTML tags, no id
       IF id CA '<>'.
         id = '#'.
@@ -928,7 +928,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     regex = '^<(\w*)(?:[ ]*' && regex_html_attribute && ')*[ ]*(/)?>'.
     FIND FIRST OCCURRENCE OF REGEX regex IN line-text SUBMATCHES m1 m2
-      MATCH LENGTH length.
+      MATCH LENGTH length ##REGEX_POSIX.
     IF sy-subrc = 0.
 
       index = text_level_elements->find_val( m1 ).
@@ -955,7 +955,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
         ENDIF.
 
         CONCATENATE '</' m1 '>[ ]*$' INTO regex.
-        FIND FIRST OCCURRENCE OF REGEX regex IN remainder IGNORING CASE.
+        FIND FIRST OCCURRENCE OF REGEX regex IN remainder IGNORING CASE ##REGEX_POSIX.
         IF sy-subrc = 0.
           result-closed = abap_true.
         ENDIF.
@@ -981,7 +981,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     ENDIF.
 
     CONCATENATE '</' result-name '>[ ]*$' INTO regex.
-    FIND REGEX regex IN line-text IGNORING CASE. "close
+    FIND REGEX regex IN line-text IGNORING CASE ##REGEX_POSIX. "close
     IF sy-subrc = 0.
       IF result-depth > 0.
         result-depth = result-depth - 1.
