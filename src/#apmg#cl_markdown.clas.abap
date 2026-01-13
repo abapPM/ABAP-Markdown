@@ -895,7 +895,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     IF result-interrupted IS INITIAL.
       text = line-body.
-      REPLACE ALL OCCURRENCES OF REGEX '^[ ]{0,4}' IN text WITH ''.
+      REPLACE ALL OCCURRENCES OF REGEX '^[ ]{0,4}' IN text WITH '' ##REGEX_POSIX.
       APPEND text TO result-li-lines.
       RETURN.
     ENDIF.
@@ -903,7 +903,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     IF line-indent > 0.
       APPEND INITIAL LINE TO result-li-lines.
       text = line-body.
-      REPLACE ALL OCCURRENCES OF REGEX '^[ ]{0,4}' IN text WITH ''.
+      REPLACE ALL OCCURRENCES OF REGEX '^[ ]{0,4}' IN text WITH '' ##REGEX_POSIX.
       APPEND text TO result-li-lines.
       CLEAR result-interrupted.
       RETURN.
@@ -1286,7 +1286,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
         occ  = 0 ).
       " REGEX '(?:(\\[|])|[^|`]|`[^`]+`|`)+' is too greedy
       FIND ALL OCCURRENCES OF REGEX '(?:(\\[|])|[^|])+'
-        IN row RESULTS matches ##SUBRC_OK.
+        IN row RESULTS matches ##SUBRC_OK ##REGEX_POSIX.
       " <<< apm
       LOOP AT matches ASSIGNING <match>.
         index = sy-tabix.
@@ -1320,9 +1320,9 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     DATA regex TYPE string.
 
     result = str.
-    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN mask WITH '\\$1'.
+    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN mask WITH '\\$1' ##REGEX_POSIX.
     CONCATENATE '[' mask ']*\Z' INTO regex.
-    REPLACE ALL OCCURRENCES OF REGEX regex IN result WITH ''.
+    REPLACE ALL OCCURRENCES OF REGEX regex IN result WITH '' ##REGEX_POSIX.
   ENDMETHOD.                    "trim
 
 
@@ -1761,7 +1761,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
         text = m1.
         CONDENSE text.
         text = text.
-        REPLACE ALL OCCURRENCES OF REGEX '[ ]*\n' IN text WITH ' '.
+        REPLACE ALL OCCURRENCES OF REGEX '[ ]*\n' IN text WITH ' ' ##REGEX_POSIX.
 
         result-extent = strlen( m0 ).
         result-element-name = 'code'.
@@ -1834,7 +1834,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
         "// get the (ungreedy) end marker
         regex_delim = '[^&][&]{2}(?![&])'.
-        REPLACE ALL OCCURRENCES OF '&' IN regex_delim WITH marker.
+        REPLACE ALL OCCURRENCES OF '&' IN regex_delim WITH marker ##REGEX_POSIX.
         FIND REGEX regex_delim IN m1 MATCH OFFSET offset ##REGEX_POSIX.
         IF sy-subrc = 0.
           offset = offset + 1.
@@ -2431,17 +2431,17 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       offset        TYPE i.
 
     marker_ptn = marker.
-    REPLACE ALL OCCURRENCES OF REGEX '([*?!+])' IN marker_ptn WITH '[$1]'.
+    REPLACE ALL OCCURRENCES OF REGEX '([*?!+])' IN marker_ptn WITH '[$1]' ##REGEX_POSIX.
     submarker_ptn = marker(1).
-    REPLACE ALL OCCURRENCES OF REGEX '([*?!+])' IN submarker_ptn WITH '[$1]'.
+    REPLACE ALL OCCURRENCES OF REGEX '([*?!+])' IN submarker_ptn WITH '[$1]' ##REGEX_POSIX.
 
     regex = c_regex.
-    REPLACE ALL OCCURRENCES OF '{&1}' IN regex WITH submarker_ptn.
-    REPLACE ALL OCCURRENCES OF '{&X}' IN regex WITH marker_ptn.
+    REPLACE ALL OCCURRENCES OF '{&1}' IN regex WITH submarker_ptn ##REGEX_POSIX.
+    REPLACE ALL OCCURRENCES OF '{&X}' IN regex WITH marker_ptn ##REGEX_POSIX.
 
     regex_delim = c_regex_delim.
-    REPLACE ALL OCCURRENCES OF '{&1}' IN regex_delim WITH submarker_ptn.
-    REPLACE ALL OCCURRENCES OF '{&X}' IN regex_delim WITH marker_ptn.
+    REPLACE ALL OCCURRENCES OF '{&1}' IN regex_delim WITH submarker_ptn ##REGEX_POSIX.
+    REPLACE ALL OCCURRENCES OF '{&X}' IN regex_delim WITH marker_ptn ##REGEX_POSIX.
 
     FIND REGEX regex IN subject SUBMATCHES m0 m1 ##REGEX_POSIX.
     IF sy-subrc = 0.
@@ -2691,7 +2691,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     definition_data = NEW #( value_type = 'lcl_hashmap:lcl_hashmap' ).
 
     " standardize line breaks
-    REPLACE ALL OCCURRENCES OF REGEX '\r?\n' IN text WITH %_newline.
+    REPLACE ALL OCCURRENCES OF REGEX '\r?\n' IN text WITH %_newline ##REGEX_POSIX.
 
     " remove surrounding line breaks
     text = trim(
@@ -2743,9 +2743,9 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     DATA regex TYPE string.
 
     result = str.
-    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN mask WITH '\\$1'.
+    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN mask WITH '\\$1' ##REGEX_POSIX.
     CONCATENATE '(\A[' mask ']*)|([' mask ']*\Z)' INTO regex.
-    REPLACE ALL OCCURRENCES OF REGEX regex IN result WITH ''.
+    REPLACE ALL OCCURRENCES OF REGEX regex IN result WITH '' ##REGEX_POSIX.
   ENDMETHOD.                    "trim
 
 
@@ -2756,10 +2756,10 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     result = text.
 
     IF breaks_enabled IS NOT INITIAL.
-      REPLACE ALL OCCURRENCES OF REGEX '[ ]*\n' IN result WITH break.
+      REPLACE ALL OCCURRENCES OF REGEX '[ ]*\n' IN result WITH break ##REGEX_POSIX.
     ELSE.
-      REPLACE ALL OCCURRENCES OF REGEX '(?:[ ][ ]+|[ ]*\\)\n' IN result WITH break.
-      REPLACE ALL OCCURRENCES OF REGEX ' \n' IN result WITH %_newline.
+      REPLACE ALL OCCURRENCES OF REGEX '(?:[ ][ ]+|[ ]*\\)\n' IN result WITH break ##REGEX_POSIX.
+      REPLACE ALL OCCURRENCES OF REGEX ' \n' IN result WITH %_newline ##REGEX_POSIX.
     ENDIF.
   ENDMETHOD.                    "unmarked_text
 
@@ -2822,7 +2822,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     result = source.
 
-    FIND ALL OCCURRENCES OF REGEX 'href\s*=\s*"([^"]*)"' IN result RESULTS matches ##SUBRC_OK.
+    FIND ALL OCCURRENCES OF REGEX 'href\s*=\s*"([^"]*)"' IN result RESULTS matches ##SUBRC_OK ##REGEX_POSIX.
 
     SORT matches DESCENDING BY line DESCENDING offset.
 
@@ -2837,7 +2837,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     CLEAR matches.
 
-    FIND ALL OCCURRENCES OF REGEX 'src\s*=\s*"([^"]*)"' IN result RESULTS matches ##SUBRC_OK.
+    FIND ALL OCCURRENCES OF REGEX 'src\s*=\s*"([^"]*)"' IN result RESULTS matches ##SUBRC_OK ##REGEX_POSIX.
 
     SORT matches DESCENDING BY line DESCENDING offset.
 
@@ -2891,7 +2891,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     LOOP AT lines INTO line.
 
       chopped_line = line.
-      REPLACE REGEX '\s+$' IN chopped_line WITH ''.
+      REPLACE REGEX '\s+$' IN chopped_line WITH '' ##REGEX_POSIX.
       IF strlen( chopped_line ) = 0.
         current_block-interrupted = abap_true.
         CONTINUE.
