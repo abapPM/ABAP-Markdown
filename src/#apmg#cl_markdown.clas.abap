@@ -237,14 +237,14 @@ CLASS /apmg/cl_markdown DEFINITION
     CLASS-METHODS trim
       IMPORTING
         !str          TYPE string
-        VALUE(mask)   TYPE string DEFAULT ' \t\n\r'
+        !mask         TYPE string DEFAULT ' \t\n\r'
       RETURNING
         VALUE(result) TYPE string.
 
     CLASS-METHODS chop
       IMPORTING
         !str          TYPE string
-        VALUE(mask)   TYPE string DEFAULT ' \t\n\r'
+        !mask         TYPE string DEFAULT ' \t\n\r'
       RETURNING
         VALUE(result) TYPE string ##CALLED.
 
@@ -257,12 +257,12 @@ CLASS /apmg/cl_markdown DEFINITION
 
     CLASS-METHODS match_marked_string
       IMPORTING
-        !marker          TYPE string
-        !subject         TYPE string
+        !marker    TYPE string
+        !subject   TYPE string
       EXPORTING
-        VALUE(m0)        TYPE string
-        VALUE(m1)        TYPE string
-        VALUE(not_found) TYPE abap_bool.
+        !m0        TYPE string
+        !m1        TYPE string
+        !not_found TYPE abap_bool.
 
     CLASS-METHODS _escape
       IMPORTING
@@ -474,9 +474,9 @@ CLASS /apmg/cl_markdown DEFINITION
 
     METHODS inline_image
       IMPORTING
-        VALUE(excerpt) TYPE ty_excerpt
+        !excerpt      TYPE ty_excerpt
       RETURNING
-        VALUE(result)  TYPE ty_inline ##CALLED.
+        VALUE(result) TYPE ty_inline ##CALLED.
 
     METHODS inline_link
       IMPORTING
@@ -1163,10 +1163,10 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       LOOP AT divider_cells ASSIGNING <divider_cell>.
         <divider_cell> = trim( <divider_cell> ).
         <divider_cell> = replace(
-         val  = <divider_cell>
-         sub  = '%bar%'
-         with = '|'
-         occ  = 0 ). " apm
+          val  = <divider_cell>
+          sub  = '%bar%'
+          with = '|'
+          occ  = 0 ). " apm
         CHECK <divider_cell> IS NOT INITIAL.
         APPEND INITIAL LINE TO result-alignments ASSIGNING <alignment>.
 
@@ -1204,10 +1204,10 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
         index = sy-tabix.
         <header_cell> = trim( <header_cell> ).
         <header_cell> = replace(
-         val  = <header_cell>
-         sub  = '%bar%'
-         with = '|'
-         occ  = 0 ). " apm
+          val  = <header_cell>
+          sub  = '%bar%'
+          with = '|'
+          occ  = 0 ). " apm
 
         APPEND INITIAL LINE TO headeresults ASSIGNING <headeresult>.
         <headeresult>-name = 'th'.
@@ -1320,8 +1320,9 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     DATA regex TYPE string.
 
     result = str.
-    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN mask WITH '\\$1' ##REGEX_POSIX.
-    CONCATENATE '[' mask ']*\Z' INTO regex.
+    regex = mask.
+    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN regex WITH '\\$1' ##REGEX_POSIX.
+    CONCATENATE '[' regex ']*\Z' INTO regex.
     REPLACE ALL OCCURRENCES OF REGEX regex IN result WITH '' ##REGEX_POSIX.
   ENDMETHOD.                    "trim
 
@@ -1911,6 +1912,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
 
   METHOD inline_image.
+    DATA excerpt_ LIKE excerpt.
     DATA link LIKE result.
 
     FIELD-SYMBOLS:
@@ -1919,9 +1921,11 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
     CHECK strlen( excerpt-text ) > 1 AND
           excerpt-text+1(1) = '['.
-    excerpt-text = excerpt-text+1.
 
-    link = inline_link( excerpt ).
+    excerpt_ = excerpt.
+    excerpt_-text = excerpt_-text+1.
+
+    link = inline_link( excerpt_ ).
     CHECK link IS NOT INITIAL.
 
     result-extent = link-extent + 1.
@@ -2430,6 +2434,8 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
       regex_delim   TYPE string,
       offset        TYPE i.
 
+    CLEAR: m0, m1, not_found.
+
     marker_ptn = marker.
     REPLACE ALL OCCURRENCES OF REGEX '([*?!+])' IN marker_ptn WITH '[$1]' ##REGEX_POSIX.
     submarker_ptn = marker(1).
@@ -2743,8 +2749,9 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
     DATA regex TYPE string.
 
     result = str.
-    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN mask WITH '\\$1' ##REGEX_POSIX.
-    CONCATENATE '(\A[' mask ']*)|([' mask ']*\Z)' INTO regex.
+    regex = mask.
+    REPLACE ALL OCCURRENCES OF REGEX '([\.\?\*\+\|])' IN regex WITH '\\$1' ##REGEX_POSIX.
+    CONCATENATE '(\A[' regex ']*)|([' regex ']*\Z)' INTO regex.
     REPLACE ALL OCCURRENCES OF REGEX regex IN result WITH '' ##REGEX_POSIX.
   ENDMETHOD.                    "trim
 
