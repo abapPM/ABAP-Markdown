@@ -6,9 +6,9 @@
   "keywords": [
     "abap",
     "apm",
-    "module",
     "markdown",
-    "markup"
+    "markup",
+    "module"
   ],
   "homepage": "https://abappm.com",
   "bugs": {
