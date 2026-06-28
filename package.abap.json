@@ -35,7 +35,7 @@
     "url": "https://github.com/sponsors/abapPM"
   },
   "dependencies": {
-    "error": "^1.0.0",
+    "exceptions": "^1.0.0",
     "syntax-highlighter": "^1.0.0"
   },
   "engines": {
