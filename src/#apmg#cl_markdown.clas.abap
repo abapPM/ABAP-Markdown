@@ -65,7 +65,7 @@ CLASS /apmg/cl_markdown DEFINITION
 
     METHODS set_safe_mode
       IMPORTING
-        iv_safe_mode  TYPE clike
+        safe_mode     TYPE clike
       RETURNING
         VALUE(result) TYPE REF TO /apmg/cl_markdown.
 
@@ -2520,7 +2520,7 @@ CLASS /apmg/cl_markdown IMPLEMENTATION.
 
 
   METHOD set_safe_mode.
-    safe_mode = iv_safe_mode.
+    me->safe_mode = safe_mode.
     result = me.
   ENDMETHOD.
 
